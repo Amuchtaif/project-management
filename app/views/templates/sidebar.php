@@ -64,17 +64,17 @@
         </nav>
     </div>
 
-    <!-- Bottom User Section (Reverted to horizontal style) -->
-    <div class="mt-auto p-6 border-t border-white/5 dark:border-slate-800 transition-colors">
-        <div class="flex items-center justify-between">
+    <!-- Bottom User Section -->
+    <div class="mt-auto p-4 md:p-6 border-t border-white/5 dark:border-slate-800 transition-colors">
+        <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=4f46e5&color=fff" class="w-10 h-10 rounded-full object-cover border-2 border-white/10" alt="Avatar">
-                <div class="flex flex-col overflow-hidden max-w-[100px]">
+                <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=4f46e5&color=fff" class="w-10 h-10 rounded-full object-cover border-2 border-white/10 flex-shrink-0" alt="Avatar">
+                <div class="flex flex-col min-w-0 max-w-[120px]">
                     <p class="text-[13px] font-bold text-white truncate"><?= $_SESSION['user']['name']; ?></p>
-                    <p class="text-[11px] font-medium text-indigo-300 dark:text-indigo-400 capitalize transition-colors"><?= $_SESSION['user']['role']; ?></p>
+                    <p class="text-[11px] font-medium text-indigo-300 dark:text-indigo-400 capitalize transition-colors truncate"><?= $_SESSION['user']['role']; ?></p>
                 </div>
             </div>
-            <a href="<?= BASEURL; ?>/login/logout" class="text-indigo-300 dark:text-slate-500 hover:text-red-400 transition">
+            <a href="<?= BASEURL; ?>/login/logout" class="text-indigo-300 dark:text-slate-500 hover:text-red-400 transition flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             </a>
         </div>

@@ -63,11 +63,11 @@
             </div>
             <div class="flex items-center gap-3 relative custom-dropdown" id="profileDropdown">
                 <button onclick="toggleDropdown('profileDropdown')" class="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-slate-800 p-1.5 rounded-2xl transition">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-none"><?= $_SESSION['user']['name']; ?></p>
-                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 mt-1 capitalize transition-colors"><?= $_SESSION['user']['role']; ?></p>
+                    <div class="text-right hidden sm:block overflow-hidden">
+                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200 leading-none truncate"><?= $_SESSION['user']['name']; ?></p>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 mt-1 capitalize transition-colors truncate"><?= $_SESSION['user']['role']; ?></p>
                     </div>
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=E2E8F0&color=475569" class="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-indigo-50 dark:border-slate-800 transition-colors" alt="Avatar">
+                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=E2E8F0&color=475569" class="w-10 h-10 md:w-11 md:h-11 rounded-full border-2 border-indigo-50 dark:border-slate-800 transition-colors flex-shrink-0" alt="Avatar">
                 </button>
                 
                 <div class="dropdown-menu absolute top-full right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-xl py-2 hidden z-50">
