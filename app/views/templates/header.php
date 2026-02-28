@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $data['judul']; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+        // Initialize theme before page load
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?= BASEURL; ?>/img/favicon.png">
     <style>
@@ -144,8 +155,30 @@
         input[type="range"]:active::-webkit-slider-thumb {
             transform: scale(0.95);
         }
+
+        /* Dark Mode Specific Overrides for non-Tailwind elements */
+        .dark body { background-color: #0f172a; }
+        .dark .sidebar-active { background-color: #1e293b; color: #818cf8; }
+        .dark .select-trigger { background-color: #0f172a; border-color: #334155; color: #e5e7eb; }
+        .dark .select-trigger-text { color: #e5e7eb !important; }
+        .dark .select-trigger-text.text-gray-400 { color: #64748b !important; } /* slate-500 placeholder */
+        .dark .select-options { background-color: #0f172a; border-color: #334155; }
+        .dark .select-option { color: #cbd5e1; } /* slate-300 */
+        .dark .select-option:hover { background-color: #1e293b; color: #fff; }
+        .dark .select-option.selected { background-color: #1e293b; color: #818cf8; border-left: 3px solid #6366f1; }
+        .dark input[type="range"]::-webkit-slider-thumb { border-color: #1e293b; }
     </style>
     <script>
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
         // Global logic for professional dropdowns
         document.addEventListener('click', function (e) {
             // Close all dropdowns when clicking outside

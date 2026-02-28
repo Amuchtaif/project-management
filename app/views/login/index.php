@@ -7,6 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="<?= BASEURL; ?>/img/favicon.png">
+    <script>
+        // Initialize theme before page load
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .bg-login-gradient {
@@ -14,29 +22,29 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 dark:bg-slate-950 min-h-screen flex items-center justify-center p-4 transition-colors">
 
-    <div class="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+    <div class="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row transition-colors border border-transparent dark:border-slate-800">
         <!-- Left Side: Form -->
         <div class="w-full md:w-1/2 p-12">
             
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Selamat Datang Kembali</h1>
-            <p class="text-gray-500 mb-8">Masuk ke akun Anda untuk mengelola proyek</p>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 transition-colors">Selamat Datang Kembali</h1>
+            <p class="text-gray-500 dark:text-gray-400 mb-8 transition-colors">Masuk ke akun Anda untuk mengelola proyek</p>
 
             <?php Flasher::flashInline(); ?>
 
             <form action="<?= BASEURL; ?>/login/process" method="POST" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input type="email" name="email" placeholder="nama@perusahaan.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" required>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Email</label>
+                    <input type="email" name="email" placeholder="nama@perusahaan.com" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition transition-colors" required>
                 </div>
                 <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="block text-sm font-medium text-gray-700">Kata Sandi</label>
+                    <div class="flex justify-between mb-2 transition-colors">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Kata Sandi</label>
                     </div>
                     <div class="relative">
-                        <input type="password" name="password" id="password" placeholder="Masukkan kata sandi Anda" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition" required>
-                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+                        <input type="password" name="password" id="password" placeholder="Masukkan kata sandi Anda" class="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition transition-colors" required>
+                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" id="toggleIcon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                         </button>
                     </div>

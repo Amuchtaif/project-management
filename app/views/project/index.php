@@ -1,34 +1,34 @@
 <?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
 <div id="project-action-content" class="hidden">
-    <button class="w-full lg:w-auto bg-[#4f46e5] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 btnTambahProyek">
+    <button class="w-full lg:w-auto bg-[#4f46e5] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none btnTambahProyek">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
         Buat Proyek Baru
     </button>
 </div>
 <?php endif; ?>
 
-<div class="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden p-6 scale-95 md:scale-100">
+<div class="bg-white dark:bg-slate-800 rounded-[2rem] border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden p-6 scale-95 md:scale-100 transition-colors">
     <!-- Filters & Flash (Keep existing structure) -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div class="flex flex-wrap items-center gap-4">
             <div class="relative custom-dropdown" id="projectStatusDropdown">
-                <button onclick="toggleDropdown('projectStatusDropdown')" class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer tracking-tight flex items-center gap-2">
+                <button onclick="toggleDropdown('projectStatusDropdown')" class="bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer tracking-tight flex items-center gap-2 transition-colors">
                     <?= isset($_GET['status']) ? $_GET['status'] : 'Semua Status' ?>
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-xl py-2 hidden z-50">
-                    <button onclick="applyFilter('status', '')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Semua Status</button>
-                    <button onclick="applyFilter('status', 'Sesuai Jadwal')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Sesuai Jadwal</button>
-                    <button onclick="applyFilter('status', 'Terhambat')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Terhambat</button>
-                    <button onclick="applyFilter('status', 'Selesai')" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Selesai</button>
+                <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl py-2 hidden z-50">
+                    <button onclick="applyFilter('status', '')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Semua Status</button>
+                    <button onclick="applyFilter('status', 'Sesuai Jadwal')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Sesuai Jadwal</button>
+                    <button onclick="applyFilter('status', 'Terhambat')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Terhambat</button>
+                    <button onclick="applyFilter('status', 'Selesai')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Selesai</button>
                 </div>
             </div>
 
             <div class="relative">
                 <input type="text" id="projectSearch" placeholder="Cari proyek..." value="<?= $_GET['search'] ?? '' ?>" 
-                    class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 focus:ring-2 focus:ring-indigo-500 outline-none pr-10"
+                    class="bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none pr-10 transition-colors"
                     onkeypress="if(event.key === 'Enter') applyFilter('search', this.value)">
-                <svg class="w-4 h-4 text-gray-400 absolute right-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 absolute right-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
             
             <?php if(isset($_GET['status']) || isset($_GET['search'])) : ?>
@@ -36,10 +36,10 @@
             <?php endif; ?>
         </div>
         
-        <div class="flex bg-gray-50 p-1.5 rounded-xl gap-1">
-            <button onclick="applyFilter('status', 'Sesuai Jadwal')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Sesuai Jadwal') ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:bg-white hover:shadow-sm' ?>">Sesuai Jadwal</button>
-            <button onclick="applyFilter('status', 'Terhambat')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Terhambat') ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:bg-white hover:shadow-sm' ?>">Terhambat</button>
-            <button onclick="applyFilter('status', 'Selesai')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Selesai') ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:bg-white hover:shadow-sm' ?>">Selesai</button>
+        <div class="flex bg-gray-50 dark:bg-slate-900 p-1.5 rounded-xl gap-1 transition-colors">
+            <button onclick="applyFilter('status', 'Sesuai Jadwal')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Sesuai Jadwal') ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm' ?>">Sesuai Jadwal</button>
+            <button onclick="applyFilter('status', 'Terhambat')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Terhambat') ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm' ?>">Terhambat</button>
+            <button onclick="applyFilter('status', 'Selesai')" class="px-3 md:px-5 py-1.5 rounded-lg text-[10px] md:text-sm font-bold transition <?= (isset($_GET['status']) && $_GET['status'] == 'Selesai') ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm' ?>">Selesai</button>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
     <div class="overflow-x-auto -mx-6 px-6">
         <table class="w-full text-left min-w-[800px]">
             <thead>
-                <tr class="text-[11px] font-extrabold text-[#9ca3af] uppercase tracking-[0.2em] border-b border-gray-50">
+                <tr class="text-[11px] font-extrabold text-[#9ca3af] dark:text-gray-500 uppercase tracking-[0.2em] border-b border-gray-50 dark:border-slate-700 transition-colors">
                     <th class="pb-6 pl-2">Nama Proyek</th>
                     <th class="pb-6">Klien</th>
                     <th class="pb-6">Tenggat Waktu</th>
@@ -59,15 +59,15 @@
                     <?php endif; ?>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-50/50">
+            <tbody class="divide-y divide-gray-50/50 dark:divide-slate-700/50 transition-colors">
                 <?php if(empty($data['projects'])) : ?>
                     <tr><td colspan="6" class="py-20 text-center text-gray-400 font-medium">Belum ada proyek ditambahkan.</td></tr>
                 <?php endif; ?>
                 <?php foreach($data['projects'] as $p) : ?>
-                <tr class="group hover:bg-gray-50/50 transition">
+                <tr class="group hover:bg-gray-50/50 dark:hover:bg-slate-900/30 transition-colors">
                     <td class="py-6 pl-2">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 <?= $p['status_color']; ?> rounded-2xl flex items-center justify-center bg-opacity-10 shadow-sm border border-gray-100/50">
+                            <div class="w-12 h-12 <?= $p['status_color']; ?> rounded-2xl flex items-center justify-center bg-opacity-10 shadow-sm border border-gray-100/50 dark:border-slate-700/50">
                                 <?php if($p['icon'] == 'rocket') : ?>
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                                 <?php elseif($p['icon'] == 'bank') : ?>
@@ -79,18 +79,18 @@
                                 <?php endif; ?>
                             </div>
                             <div>
-                                <h4 class="font-extrabold text-[#111827] text-[15px] tracking-tight"><?= $p['name']; ?></h4>
+                                <h4 class="font-extrabold text-[#111827] dark:text-gray-100 text-[15px] tracking-tight transition-colors"><?= $p['name']; ?></h4>
                             </div>
                         </div>
                     </td>
                     <td class="py-6">
-                        <span class="text-[#6b7280] font-bold text-[14px]"><?= $p['client']; ?></span>
+                        <span class="text-[#6b7280] dark:text-gray-400 font-bold text-[14px] transition-colors"><?= $p['client']; ?></span>
                     </td>
-                    <td class="py-6 font-bold text-[14px] text-[#4b5563]">
+                    <td class="py-6 font-bold text-[14px] text-[#4b5563] dark:text-gray-300 transition-colors">
                         <?= date('d M Y', strtotime($p['due_date'])); ?>
                     </td>
                     <td class="py-6">
-                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.1em] <?= $p['status_color']; ?> bg-opacity-20 flex w-fit items-center justify-center leading-none border border-current bg-white">
+                        <span class="px-4 py-1.5 rounded-full text-[10px] font-black tracking-[0.1em] <?= $p['status_color']; ?> bg-opacity-20 flex w-fit items-center justify-center leading-none border border-current bg-white dark:bg-slate-800 transition-colors">
                             <?= strtoupper($p['status']); ?>
                         </span>
                     </td>
@@ -103,10 +103,10 @@
                             elseif ($progress >= 41) { $pColor = 'bg-yellow-400'; $textCol = 'text-yellow-400'; }
                         ?>
                         <div class="flex flex-col gap-1.5 w-28">
-                            <div class="flex justify-between items-center text-[10px] font-black">
+                            <div class="flex justify-between items-center text-[10px] font-black transition-colors">
                                 <span class="<?= $textCol ?> uppercase tracking-wider"><?= $progress; ?>%</span>
                             </div>
-                            <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="w-full bg-gray-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden transition-colors">
                                 <div class="<?= $pColor ?> h-full rounded-full transition-all duration-500" style="width: <?= $progress; ?>%"></div>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                             <div class="flex items-center gap-3">
                                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['leader_name']); ?>&background=random" class="w-8 h-8 rounded-full border-2 border-white shadow-sm">
                                 <div class="flex flex-col">
-                                    <span class="text-[13px] font-black text-gray-900 leading-tight"><?= $p['leader_name']; ?></span>
+                                    <span class="text-[13px] font-black text-gray-900 dark:text-gray-100 leading-tight transition-colors"><?= $p['leader_name']; ?></span>
                                     <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Project Lead</span>
                                 </div>
                             </div>
@@ -130,11 +130,11 @@
                             <div class="flex items-center -space-x-3">
                                 <?php foreach(array_slice($members, 0, 3) as $m) : ?>
                                     <img src="https://ui-avatars.com/api/?name=<?= urlencode(trim($m)); ?>&background=random" 
-                                         class="w-7 h-7 rounded-full border-2 border-white shadow-sm" 
+                                         class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" 
                                          title="<?= trim($m); ?>">
                                 <?php endforeach; ?>
                                 <?php if($count > 3) : ?>
-                                    <div class="w-7 h-7 rounded-full bg-indigo-50 border-2 border-white flex items-center justify-center text-[10px] font-black text-indigo-600 shadow-sm">
+                                    <div class="w-7 h-7 rounded-full bg-indigo-50 dark:bg-indigo-900/30 border-2 border-white dark:border-slate-800 flex items-center justify-center text-[10px] font-black text-indigo-600 dark:text-indigo-400 shadow-sm transition-colors">
                                         +<?= $count - 3; ?>
                                     </div>
                                 <?php endif; ?>
@@ -147,10 +147,10 @@
                     <?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
                     <td class="py-6 text-right pr-4">
                         <div class="flex items-center justify-end gap-5">
-                            <button class="p-2 text-[#9ca3af] hover:text-indigo-600 transition rounded-lg hover:bg-gray-50 btnEditProyek" data-id="<?= $p['id']; ?>">
+                            <button class="p-2 text-[#9ca3af] dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900 btnEditProyek" data-id="<?= $p['id']; ?>">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                             </button>
-                            <button class="p-2 text-[#9ca3af] hover:text-red-500 transition rounded-lg hover:bg-gray-50" onclick="showDeleteModal('<?= BASEURL; ?>/project/delete/<?= $p['id']; ?>', '<?= addslashes($p['name']); ?>')">
+                            <button class="p-2 text-[#9ca3af] dark:text-gray-500 hover:text-red-500 transition rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900" onclick="showDeleteModal('<?= BASEURL; ?>/project/delete/<?= $p['id']; ?>', '<?= addslashes($p['name']); ?>')">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -173,43 +173,43 @@
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-900 bg-opacity-40 backdrop-blur-sm modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleProjectModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
+        <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-3xl text-left shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-xl sm:w-full transition-colors">
             <form action="<?= BASEURL; ?>/project/add" method="post" id="projectForm">
                 <input type="hidden" name="id" id="project_id">
                 <div class="p-8 md:p-10">
                     <div class="flex justify-between items-center mb-8">
                         <div>
-                            <h3 class="text-2xl font-black text-gray-900 tracking-tight" id="modalTitle">Tambah Proyek</h3>
-                            <p class="text-gray-400 text-sm font-bold mt-1">Lengkapi informasi detail proyek di bawah ini.</p>
+                            <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight transition-colors" id="modalTitle">Tambah Proyek</h3>
+                            <p class="text-gray-400 dark:text-gray-500 text-sm font-bold mt-1 transition-colors">Lengkapi informasi detail proyek di bawah ini.</p>
                         </div>
-                        <button type="button" onclick="toggleProjectModal()" class="text-gray-300 hover:text-gray-500 transition">
+                        <button type="button" onclick="toggleProjectModal()" class="text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
 
                     <div class="space-y-6">
                         <div>
-                            <label for="name" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama Proyek</label>
-                            <input type="text" name="name" id="name" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Website Redesign 2024">
+                            <label for="name" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Nama Proyek</label>
+                            <input type="text" name="name" id="name" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Website Redesign 2024">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="client" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Klien</label>
-                                <input type="text" name="client" id="client" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Nama Perusahaan">
+                                <label for="client" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Klien</label>
+                                <input type="text" name="client" id="client" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Nama Perusahaan">
                             </div>
                             <div>
-                                <label for="due_date" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Tenggat Waktu</label>
-                                <input type="date" name="due_date" id="due_date" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition cursor-pointer" onclick="this.showPicker()">
+                                <label for="due_date" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Tenggat Waktu</label>
+                                <input type="date" name="due_date" id="due_date" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition cursor-pointer" onclick="this.showPicker()">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="status" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Status Utama</label>
+                                <label for="status" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Status Utama</label>
                                 <div class="select-container" id="statusSelectContainer">
                                     <div class="select-trigger">
-                                        <span class="select-trigger-text text-gray-400">Pilih Status...</span>
+                                        <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Status...</span>
                                         <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                     <div class="select-options">
@@ -221,10 +221,10 @@
                                 <input type="hidden" name="status" id="status" value="Sesuai Jadwal">
                             </div>
                             <div>
-                                <label for="icon" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Ikon Representasi</label>
+                                <label for="icon" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Ikon Representasi</label>
                                 <div class="select-container" id="iconSelectContainer">
                                     <div class="select-trigger">
-                                        <span class="select-trigger-text text-gray-400">Pilih Ikon...</span>
+                                        <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Ikon...</span>
                                         <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                     <div class="select-options">
@@ -240,10 +240,10 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="leader_id" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Project Leader</label>
+                                <label for="leader_id" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Project Leader</label>
                                 <div class="select-container" id="leaderSelectContainer">
                                     <div class="select-trigger">
-                                        <span class="select-trigger-text text-gray-400">Pilih Leader...</span>
+                                        <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Leader...</span>
                                         <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                     <div class="select-options">
@@ -255,10 +255,10 @@
                                 <input type="hidden" name="leader_id" id="leader_id">
                             </div>
                             <div>
-                                <label for="member_ids" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Anggota Tim Lainnya</label>
+                                <label for="member_ids" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Anggota Tim Lainnya</label>
                                 <div class="select-container" id="memberSelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Anggota...">
-                                        <span class="select-trigger-text text-gray-400">Pilih Anggota...</span>
+                                        <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Anggota...</span>
                                         <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                     <div class="select-options">
@@ -300,8 +300,8 @@
                     </div>
 
                     <div class="flex gap-4 mt-10">
-                        <button type="button" onclick="toggleProjectModal()" class="flex-1 px-8 py-4 rounded-2xl bg-gray-100 text-gray-700 font-black text-sm uppercase tracking-widest hover:bg-gray-200 transition">Batal</button>
-                        <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Simpan Proyek</button>
+                        <button type="button" onclick="toggleProjectModal()" class="flex-1 px-8 py-4 rounded-2xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-black text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-slate-600 transition transition-colors">Batal</button>
+                        <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none">Simpan Proyek</button>
                     </div>
                 </div>
             </form>
