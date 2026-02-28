@@ -107,6 +107,9 @@
             color: #4f46e5;
             font-weight: 700;
         }
+        .select-option.selected .check-icon {
+            opacity: 1;
+        }
 
         /* Custom Scrollbar */
         .select-options::-webkit-scrollbar {
@@ -220,6 +223,94 @@
                 triggerText.classList.add('text-gray-400');
                 triggerText.classList.remove('text-gray-900');
                 options.forEach(o => o.classList.remove('selected'));
+            }
+        }
+
+        function initMultiSelect(containerId, inputId, onSelect = null) {
+            const container = document.getElementById(containerId);
+            if (!container || !container.querySelector('.select-trigger')) return;
+            
+            const trigger = container.querySelector('.select-trigger');
+            const options = Array.from(container.querySelectorAll('.select-option'));
+            const hiddenInput = document.getElementById(inputId);
+            const triggerText = container.querySelector('.select-trigger-text');
+            
+            if (!hiddenInput) return;
+
+            if (!container.dataset.multiInitialized) {
+                trigger.onclick = (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.select-trigger').forEach(t => {
+                        if (t !== trigger) t.classList.remove('active');
+                    });
+                    trigger.classList.toggle('active');
+                };
+
+                options.forEach(opt => {
+                    opt.onclick = (e) => {
+                        e.stopPropagation();
+                        opt.classList.toggle('selected');
+                        
+                        const selectedOpts = options.filter(o => o.classList.contains('selected'));
+                        const values = selectedOpts.map(o => o.getAttribute('data-value'));
+                        const texts = selectedOpts.map(o => o.textContent.trim());
+                        
+                        hiddenInput.value = JSON.stringify(values);
+                        
+                        if (values.length > 0) {
+                            triggerText.textContent = texts.length > 2 
+                                ? texts.slice(0, 2).join(', ') + '... (+' + (texts.length - 2) + ')'
+                                : texts.join(', ');
+                            triggerText.classList.remove('text-gray-400');
+                            triggerText.classList.add('text-gray-900');
+                        } else {
+                            const placeholder = trigger.getAttribute('data-placeholder') || 'Pilih...';
+                            triggerText.textContent = placeholder;
+                            triggerText.classList.add('text-gray-400');
+                            triggerText.classList.remove('text-gray-900');
+                        }
+
+                        if (onSelect) onSelect(values);
+                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    };
+                });
+                container.dataset.multiInitialized = "true";
+            }
+
+            // Sync UI state
+            try {
+                let currentVals = [];
+                try {
+                    currentVals = JSON.parse(hiddenInput.value || '[]');
+                } catch(e) {
+                    if (hiddenInput.value) currentVals = [hiddenInput.value];
+                }
+
+                options.forEach(opt => {
+                    const val = opt.getAttribute('data-value');
+                    if (currentVals.includes(val)) {
+                        opt.classList.add('selected');
+                    } else {
+                        opt.classList.remove('selected');
+                    }
+                });
+                
+                const selectedOpts = options.filter(o => o.classList.contains('selected'));
+                const texts = selectedOpts.map(o => o.textContent.trim());
+                if (texts.length > 0) {
+                    triggerText.textContent = texts.length > 2 
+                        ? texts.slice(0, 2).join(', ') + '... (+' + (texts.length - 2) + ')'
+                        : texts.join(', ');
+                    triggerText.classList.remove('text-gray-400');
+                    triggerText.classList.add('text-gray-900');
+                } else {
+                    const placeholder = trigger.getAttribute('data-placeholder') || 'Pilih...';
+                    triggerText.textContent = placeholder;
+                    triggerText.classList.add('text-gray-400');
+                    triggerText.classList.remove('text-gray-900');
+                }
+            } catch(e) {
+                console.error("MultiSelect Sync Error:", e);
             }
         }
     </script>

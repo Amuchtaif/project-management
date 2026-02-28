@@ -77,6 +77,14 @@ class Project extends Controller {
                 $this->model('Project_model')->assignMember($projectId, $_POST['leader_id'], 'leader');
             }
 
+            // Sync members if selected
+            if (!empty($_POST['member_ids'])) {
+                $memberIds = json_decode($_POST['member_ids'], true);
+                if (is_array($memberIds)) {
+                    $this->model('Project_model')->syncMembers($projectId, $memberIds);
+                }
+            }
+
             $this->model('Activity_model')->addActivity([
                 'user_id' => $_SESSION['user']['id'],
                 'action' => 'menambah proyek baru',
@@ -112,7 +120,15 @@ class Project extends Controller {
             if (!empty($_POST['leader_id'])) {
                 $this->model('Project_model')->assignMember($projectId, $_POST['leader_id'], 'leader');
             }
-            $result = 1; // Mark as success even if only leader changed
+            $result = 1; 
+        }
+
+        // Handle members update
+        if (isset($_POST['member_ids'])) {
+            $projectId = $_POST['id'];
+            $memberIds = json_decode($_POST['member_ids'], true);
+            $this->model('Project_model')->syncMembers($projectId, $memberIds);
+            $result = 1; 
         }
 
         if ($result > 0) {
@@ -135,7 +151,11 @@ class Project extends Controller {
     }
 
     public function getEdit($id) {
-        echo json_encode($this->model('Project_model')->getProjectById($id));
+        $project = $this->model('Project_model')->getProjectById($id);
+        if ($project) {
+            $project['member_ids'] = $this->model('Project_model')->getProjectMemberIds($id);
+        }
+        echo json_encode($project);
     }
 
     /**

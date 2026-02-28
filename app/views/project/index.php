@@ -112,17 +112,37 @@
                         </div>
                     </td>
                     <td class="py-6">
-                        <?php if(!empty($p['leader_name'])) : ?>
-                        <div class="flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['leader_name']); ?>&background=random" class="w-8 h-8 rounded-full border-2 border-white shadow-sm">
-                            <div class="flex flex-col">
-                                <span class="text-[13px] font-black text-gray-900 leading-tight"><?= $p['leader_name']; ?></span>
-                                <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Project Lead</span>
+                        <div class="flex flex-col gap-3">
+                            <?php if(!empty($p['leader_name'])) : ?>
+                            <div class="flex items-center gap-3">
+                                <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['leader_name']); ?>&background=random" class="w-8 h-8 rounded-full border-2 border-white shadow-sm">
+                                <div class="flex flex-col">
+                                    <span class="text-[13px] font-black text-gray-900 leading-tight"><?= $p['leader_name']; ?></span>
+                                    <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Project Lead</span>
+                                </div>
                             </div>
+                            <?php endif; ?>
+                            
+                            <?php if(!empty($p['member_names'])) : 
+                                $members = explode(',', $p['member_names']);
+                                $count = count($members);
+                            ?>
+                            <div class="flex items-center -space-x-3">
+                                <?php foreach(array_slice($members, 0, 3) as $m) : ?>
+                                    <img src="https://ui-avatars.com/api/?name=<?= urlencode(trim($m)); ?>&background=random" 
+                                         class="w-7 h-7 rounded-full border-2 border-white shadow-sm" 
+                                         title="<?= trim($m); ?>">
+                                <?php endforeach; ?>
+                                <?php if($count > 3) : ?>
+                                    <div class="w-7 h-7 rounded-full bg-indigo-50 border-2 border-white flex items-center justify-center text-[10px] font-black text-indigo-600 shadow-sm">
+                                        +<?= $count - 3; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php elseif(empty($p['leader_name'])) : ?>
+                                <span class="text-[11px] font-bold text-gray-400 italic">Belum ada tim</span>
+                            <?php endif; ?>
                         </div>
-                        <?php else : ?>
-                        <span class="text-[11px] font-bold text-gray-400 italic">Belum ditentukan</span>
-                        <?php endif; ?>
                     </td>
                     <?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
                     <td class="py-6 text-right pr-4">
@@ -170,17 +190,17 @@
                     <div class="space-y-6">
                         <div>
                             <label for="name" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama Proyek</label>
-                            <input type="text" name="name" id="name" required class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:bg-white focus:border-indigo-500 outline-none transition" placeholder="Contoh: Website Redesign 2024">
+                            <input type="text" name="name" id="name" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Website Redesign 2024">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="client" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Klien</label>
-                                <input type="text" name="client" id="client" required class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:bg-white focus:border-indigo-500 outline-none transition" placeholder="Nama Perusahaan">
+                                <input type="text" name="client" id="client" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Nama Perusahaan">
                             </div>
                             <div>
                                 <label for="due_date" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Tenggat Waktu</label>
-                                <input type="date" name="due_date" id="due_date" required class="w-full bg-gray-50 border-2 border-gray-50 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:bg-white focus:border-indigo-500 outline-none transition">
+                                <input type="date" name="due_date" id="due_date" required class="w-full bg-white border-[1.5px] border-gray-200 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition cursor-pointer" onclick="this.showPicker()">
                             </div>
                         </div>
 
@@ -218,20 +238,42 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label for="leader_id" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Penanggung Jawab Proyek</label>
-                            <div class="select-container" id="leaderSelectContainer">
-                                <div class="select-trigger">
-                                    <span class="select-trigger-text text-gray-400">Pilih Penanggung Jawab...</span>
-                                    <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="leader_id" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Project Leader</label>
+                                <div class="select-container" id="leaderSelectContainer">
+                                    <div class="select-trigger">
+                                        <span class="select-trigger-text text-gray-400">Pilih Leader...</span>
+                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                    <div class="select-options">
+                                        <?php foreach($data['team'] as $m) : ?>
+                                            <div class="select-option" data-value="<?= $m['id']; ?>"><?= $m['name']; ?></div>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
-                                <div class="select-options">
-                                    <?php foreach($data['team'] as $m) : ?>
-                                        <div class="select-option" data-value="<?= $m['id']; ?>"><?= $m['name']; ?></div>
-                                    <?php endforeach; ?>
-                                </div>
+                                <input type="hidden" name="leader_id" id="leader_id">
                             </div>
-                            <input type="hidden" name="leader_id" id="leader_id">
+                            <div>
+                                <label for="member_ids" class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Anggota Tim Lainnya</label>
+                                <div class="select-container" id="memberSelectContainer">
+                                    <div class="select-trigger" data-placeholder="Pilih Anggota...">
+                                        <span class="select-trigger-text text-gray-400">Pilih Anggota...</span>
+                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                    <div class="select-options">
+                                        <?php foreach($data['team'] as $m) : ?>
+                                            <div class="select-option flex justify-between items-center" data-value="<?= $m['id']; ?>">
+                                                <span><?= $m['name']; ?></span>
+                                                <div class="check-icon opacity-0 bg-indigo-600 text-white rounded-md p-0.5">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="member_ids" id="member_ids">
+                            </div>
                         </div>
 
                         <div>
@@ -300,10 +342,47 @@
             actionArea.appendChild(btn);
         }
 
+        function syncMemberExclusion() {
+            const leaderId = document.getElementById('leader_id').value;
+            const memberIdsInput = document.getElementById('member_ids');
+            const memberContainer = document.getElementById('memberSelectContainer');
+            if (!memberContainer) return;
+            
+            const memberOptions = memberContainer.querySelectorAll('.select-option');
+            
+            // Hide leader from member options
+            memberOptions.forEach(opt => {
+                const val = opt.getAttribute('data-value');
+                if (val === leaderId) {
+                    opt.classList.add('hidden');
+                    // If this leader was also in members, unselect it
+                    if (opt.classList.contains('selected')) {
+                        opt.classList.remove('selected');
+                        // Update hidden input
+                        try {
+                            let members = JSON.parse(memberIdsInput.value || '[]');
+                            members = members.filter(id => id !== leaderId);
+                            memberIdsInput.value = JSON.stringify(members);
+                            // Refresh multi-select UI
+                            initMultiSelect('memberSelectContainer', 'member_ids');
+                        } catch(e) {}
+                    }
+                } else {
+                    opt.classList.remove('hidden');
+                }
+            });
+        }
+
         // Initialize Custom Selects
         initCustomSelect('statusSelectContainer', 'status');
         initCustomSelect('iconSelectContainer', 'icon');
-        initCustomSelect('leaderSelectContainer', 'leader_id');
+        initCustomSelect('leaderSelectContainer', 'leader_id', () => {
+            syncMemberExclusion();
+        });
+        initMultiSelect('memberSelectContainer', 'member_ids', () => {
+            // Optional: if we want to ensure leader isn't picked in multi-select 
+            // but we already hide it in syncMemberExclusion
+        });
 
         const btnsTambah = document.querySelectorAll('.btnTambahProyek');
         btnsTambah.forEach(btn => {
@@ -317,7 +396,9 @@
                 
                 initCustomSelect('statusSelectContainer', 'status');
                 initCustomSelect('iconSelectContainer', 'icon');
-                initCustomSelect('leaderSelectContainer', 'leader_id');
+                initCustomSelect('leaderSelectContainer', 'leader_id', () => syncMemberExclusion());
+                initMultiSelect('memberSelectContainer', 'member_ids');
+                syncMemberExclusion();
 
                 toggleProjectModal();
             });
@@ -344,7 +425,11 @@
                         
                         initCustomSelect('statusSelectContainer', 'status');
                         initCustomSelect('iconSelectContainer', 'icon');
-                        initCustomSelect('leaderSelectContainer', 'leader_id');
+                        initCustomSelect('leaderSelectContainer', 'leader_id', () => syncMemberExclusion());
+
+                        document.getElementById('member_ids').value = JSON.stringify(data.member_ids || []);
+                        initMultiSelect('memberSelectContainer', 'member_ids');
+                        syncMemberExclusion();
                         
                         const radios = document.querySelectorAll('input[name="status_color"]');
                         radios.forEach(r => {

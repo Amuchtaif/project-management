@@ -13,7 +13,7 @@ class Task_model {
                   FROM tasks 
                   LEFT JOIN projects ON tasks.project_id = projects.id 
                   LEFT JOIN users u ON tasks.assignee_id = u.id 
-                  ORDER BY tasks.created_at DESC";
+                  ORDER BY (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END), tasks.created_at DESC";
         $this->db->query($query);
         return $this->db->resultSet();
     }
@@ -37,7 +37,7 @@ class Task_model {
             $query .= " AND (tasks.title LIKE :search OR projects.name LIKE :search)";
         }
 
-        $query .= " ORDER BY tasks.created_at DESC";
+        $query .= " ORDER BY (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END), tasks.created_at DESC";
 
         $this->db->query($query);
         
@@ -84,14 +84,15 @@ class Task_model {
     }
 
     public function addTask($data) {
-        $query = "INSERT INTO tasks (title, project_id, assignee_id, tag, tag_color, due_date, status, progress) 
-                  VALUES (:title, :project_id, :assignee_id, :tag, :tag_color, :due_date, :status, :progress)";
+        $query = "INSERT INTO tasks (title, project_id, assignee_id, tag, tag_color, priority, due_date, status, progress) 
+                  VALUES (:title, :project_id, :assignee_id, :tag, :tag_color, :priority, :due_date, :status, :progress)";
         $this->db->query($query);
         $this->db->bind('title', $data['title']);
         $this->db->bind('project_id', $data['project_id']);
         $this->db->bind('assignee_id', $data['assignee_id']);
         $this->db->bind('tag', $data['tag']);
         $this->db->bind('tag_color', $data['tag_color']);
+        $this->db->bind('priority', $data['priority']);
         $this->db->bind('due_date', $data['due_date']);
         $this->db->bind('status', $data['status']);
         $this->db->bind('progress', $data['progress']);
@@ -106,7 +107,7 @@ class Task_model {
     }
 
     public function updateTask($data) {
-        $query = "UPDATE tasks SET title=:title, project_id=:project_id, assignee_id=:assignee_id, tag=:tag, tag_color=:tag_color, due_date=:due_date, status=:status, progress=:progress WHERE id=:id";
+        $query = "UPDATE tasks SET title=:title, project_id=:project_id, assignee_id=:assignee_id, tag=:tag, tag_color=:tag_color, priority=:priority, due_date=:due_date, status=:status, progress=:progress WHERE id=:id";
         $this->db->query($query);
         $this->db->bind('id', $data['id']);
         $this->db->bind('title', $data['title']);
@@ -114,6 +115,7 @@ class Task_model {
         $this->db->bind('assignee_id', $data['assignee_id']);
         $this->db->bind('tag', $data['tag']);
         $this->db->bind('tag_color', $data['tag_color']);
+        $this->db->bind('priority', $data['priority']);
         $this->db->bind('due_date', $data['due_date']);
         $this->db->bind('status', $data['status']);
         $this->db->bind('progress', $data['progress']);
@@ -154,7 +156,7 @@ class Task_model {
                   FROM tasks t
                   JOIN projects p ON t.project_id = p.id
                   WHERE t.status != 'done' 
-                  AND DATEDIFF(t.due_date, CURDATE()) IN (1, 3, 7)";
+                  AND DATEDIFF(t.due_date, CURDATE()) IN (1, 3)";
         
         if ($role !== 'admin') {
             $query .= " AND t.assignee_id = :user_id";

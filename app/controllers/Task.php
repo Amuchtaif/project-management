@@ -14,7 +14,7 @@ class Task extends Controller {
 
         $data['judul'] = 'Tugas - Yayasan Assunnah';
         $data['judul_halaman'] = 'Papan Tugas';
-        $data['sub_judul'] = 'Pantau perkembangan tugas tim Anda secara real-time.';
+        $data['sub_judul'] = 'Pantau perkembangan tim.';
 
         // Project and Team for Dropdowns - Fetch early for logic
         $data['projects'] = $this->model('Project_model')->getProjectsByRole($userRole, $userId);
