@@ -54,6 +54,9 @@ class Dashboard extends Controller {
 
         // Fetch Deadline Notifications
         $data['notifications'] = $taskModel->getDeadlineNotifications($userRole, $userId);
+        
+        // Fetch Near Deadline Tasks for Dashboard Section
+        $data['near_deadline_tasks'] = $taskModel->getNearDeadlineTasks($userRole, $userId);
 
         $this->view('templates/header', $data);
         $this->view('templates/sidebar', $data);

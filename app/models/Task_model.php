@@ -171,4 +171,29 @@ class Task_model {
         
         return $this->db->resultSet();
     }
+
+    public function getNearDeadlineTasks($role, $userId, $limit = 5) {
+        $query = "SELECT t.*, p.name as project_name, u.name as assignee_name,
+                  DATEDIFF(t.due_date, CURDATE()) as days_left
+                  FROM tasks t
+                  JOIN projects p ON t.project_id = p.id
+                  LEFT JOIN users u ON t.assignee_id = u.id
+                  WHERE t.status != 'done' 
+                  AND DATEDIFF(t.due_date, CURDATE()) <= 7";
+        
+        if ($role !== 'admin') {
+            $query .= " AND t.assignee_id = :user_id";
+        }
+        
+        $query .= " ORDER BY days_left ASC, (CASE WHEN t.priority = 'tinggi' THEN 1 WHEN t.priority = 'sedang' THEN 2 ELSE 3 END) ASC
+                   LIMIT :limit";
+        
+        $this->db->query($query);
+        if ($role !== 'admin') {
+            $this->db->bind('user_id', $userId);
+        }
+        $this->db->bind('limit', $limit);
+        
+        return $this->db->resultSet();
+    }
 }

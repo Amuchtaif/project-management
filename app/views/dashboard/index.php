@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
     <!-- Stats Cards -->
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
@@ -94,10 +94,10 @@
                         <span class="<?= $textCol ?> text-sm font-black"><?= $progress; ?>%</span>
                     </div>
                     
-                    <div class="relative w-full bg-gray-50 dark:bg-slate-700 h-1.5 sm:h-2 rounded-full mb-4">
+                    <div class="relative w-full bg-gray-50 dark:bg-slate-700 h-1 sm:h-1.5 rounded-full mb-4">
                         <div class="h-full rounded-full <?= $pColor ?> transition-all duration-700" style="width: <?= $progress; ?>%"></div>
                         <!-- Slider Look decoration -->
-                        <div class="absolute top-1/2 -translate-y-1/2 w-3 sm:w-3.5 h-3 sm:h-3.5 bg-white dark:bg-slate-900 border-2 <?= $borderCol ?> rounded-full shadow-sm shadow-black/10 transition-all duration-700 pointer-events-none" style="left: calc(<?= $progress; ?>% - 6px)"></div>
+                        <div class="absolute top-1/2 -translate-y-1/2 w-2.5 sm:w-3.5 h-2.5 sm:h-3.5 bg-white dark:bg-slate-900 border-2 <?= $borderCol ?> rounded-full shadow-sm shadow-black/10 transition-all duration-700 pointer-events-none" style="left: calc(<?= $progress; ?>% - 5px)"></div>
                     </div>
 
                     <div class="flex justify-between items-center">
@@ -105,6 +105,49 @@
                         <div class="flex -space-x-2">
                             <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['leader_name'] ?? 'User'); ?>&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" title="<?= $p['leader_name'] ?? 'User'; ?>">
                         </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        
+        <!-- Near Deadline Tasks Section -->
+        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tugas Deadline Dekat</h2>
+                <a href="<?= BASEURL; ?>/task" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:underline">Lihat Semua</a>
+            </div>
+
+            <div class="space-y-4">
+                <?php if(empty($data['near_deadline_tasks'])) : ?>
+                    <p class="text-gray-400 text-sm italic">Tidak ada tugas dengan deadline dekat.</p>
+                <?php endif; ?>
+                <?php foreach($data['near_deadline_tasks'] as $task) : 
+                    $daysLeft = $task['days_left'];
+                    $badgeColor = 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400';
+                    if($daysLeft < 0) $badgeColor = 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400';
+                    elseif($daysLeft == 0) $badgeColor = 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400';
+                    elseif($daysLeft <= 3) $badgeColor = 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400';
+                    elseif($daysLeft <= 7) $badgeColor = 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400';
+                ?>
+                <div class="group flex items-center justify-between p-4 rounded-2xl border border-gray-50 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all duration-300">
+                    <div class="flex items-center gap-4 flex-grow min-w-0">
+                        <div class="hidden sm:flex w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div class="truncate">
+                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate"><?= $task['title']; ?></h4>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
+                                <span class="truncate"><?= $task['project_name']; ?></span>
+                                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
+                                <span class="truncate italic"><?= ($task['assignee_id'] == $_SESSION['user']['id'] ? 'Ditugaskan ke Anda' : 'Oleh ' . ($task['assignee_name'] ?? 'TBA')); ?></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-4">
+                        <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider <?= $badgeColor ?>">
+                            <?= $daysLeft < 0 ? abs($daysLeft) . ' Hari Terlewat' : ($daysLeft == 0 ? 'Hari Ini' : $daysLeft . ' Hari Lagi'); ?>
+                        </span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -195,7 +238,7 @@
                 <p class="text-gray-400 text-sm italic">Belum ada aktivitas baru.</p>
             <?php endif; ?>
             
-            <?php foreach(array_slice($data['activities'], 0, 5) as $activity) : 
+            <?php foreach(array_slice($data['activities'], 0, 6) as $activity) : 
                 // Icon & Color Logic based on action
                 $iconColor = "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
                 $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>';
@@ -218,10 +261,10 @@
                     $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>';
                 }
             ?>
-            <div class="relative pl-12">
+            <div class="relative pl-10 md:pl-12">
                 <!-- Timeline Icon -->
-                <div class="absolute left-0 top-0 w-10 h-10 <?= $iconColor ?> rounded-full border-4 border-white dark:border-slate-800 flex items-center justify-center z-10 shadow-sm transition-colors">
-                    <?= $svgIcon ?>
+                <div class="absolute left-0 top-0 w-8 md:w-10 h-8 md:h-10 <?= $iconColor ?> rounded-full border-4 border-white dark:border-slate-800 flex items-center justify-center z-10 shadow-sm transition-colors">
+                    <div class="scale-90 md:scale-100"><?= $svgIcon ?></div>
                 </div>
                 
                 <div class="flex-grow min-w-0">
