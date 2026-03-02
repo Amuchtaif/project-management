@@ -3,10 +3,7 @@
 
 class Activity extends Controller {
     public function index() {
-        if(!isset($_SESSION['user'])) {
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         $userId = $_SESSION['user']['id'];
         $userRole = $_SESSION['user']['role'];

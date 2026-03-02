@@ -3,11 +3,7 @@
 
 class Team extends Controller {
     public function index() {
-        if(!isset($_SESSION['user'])) {
-            Flasher::setFlash('Sesi', 'anda telah berakhir, silakan login kembali', 'danger');
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         // Hanya admin yang bisa mengakses halaman manajemen tim
         if($_SESSION['user']['role'] !== 'admin') {
@@ -33,8 +29,11 @@ class Team extends Controller {
     }
 
     public function delete($id) {
-        if(!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: ' . BASEURL . '/login');
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses ke halaman ini', 'danger');
+            header('Location: ' . BASEURL . '/dashboard');
             exit;
         }
 
@@ -66,8 +65,11 @@ class Team extends Controller {
     }
 
     public function add() {
-        if(!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: ' . BASEURL . '/login');
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses ke halaman ini', 'danger');
+            header('Location: ' . BASEURL . '/dashboard');
             exit;
         }
 
@@ -91,8 +93,11 @@ class Team extends Controller {
     }
 
     public function edit() {
-        if(!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
-            header('Location: ' . BASEURL . '/login');
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses ke halaman ini', 'danger');
+            header('Location: ' . BASEURL . '/dashboard');
             exit;
         }
 

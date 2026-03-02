@@ -3,11 +3,7 @@
 
 class Task extends Controller {
     public function index() {
-        if(!isset($_SESSION['user'])) {
-            Flasher::setFlash('Sesi', 'anda telah berakhir, silakan login kembali', 'danger');
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         $userId = $_SESSION['user']['id'];
         $userRole = $_SESSION['user']['role'];
@@ -66,10 +62,7 @@ class Task extends Controller {
     }
 
     public function delete($id) {
-        if(!isset($_SESSION['user'])) {
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         $task = $this->model('Task_model')->getTaskById($id);
         if($this->model('Task_model')->deleteTask($id) > 0) {
@@ -97,10 +90,7 @@ class Task extends Controller {
     }
 
     public function add() {
-        if(!isset($_SESSION['user'])) {
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         // Automatic Status Transition based on Progress
         $progress = (int)$_POST['progress'];
@@ -143,10 +133,7 @@ class Task extends Controller {
     }
 
     public function edit() {
-        if(!isset($_SESSION['user'])) {
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
+        $this->auth();
 
         // Automatic Status Transition based on Progress
         $progress = (int)$_POST['progress'];
