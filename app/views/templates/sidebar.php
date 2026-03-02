@@ -65,7 +65,7 @@
     </div>
 
     <!-- Bottom User Section -->
-    <div class="mt-auto p-4 md:p-6 border-t border-white/5 dark:border-slate-800 transition-colors">
+    <div class="mt-auto p-4 md:p-6 transition-colors">
         <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3">
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=4f46e5&color=fff" class="w-10 h-10 rounded-full object-cover border-2 border-white/10 flex-shrink-0" alt="Avatar">
