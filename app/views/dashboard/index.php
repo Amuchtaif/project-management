@@ -1,4 +1,4 @@
-<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
     <!-- Stats Cards -->
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">

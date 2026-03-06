@@ -13,7 +13,7 @@ class Task_model {
                   FROM tasks 
                   LEFT JOIN projects ON tasks.project_id = projects.id 
                   LEFT JOIN users u ON tasks.assignee_id = u.id 
-                  ORDER BY (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END), tasks.created_at DESC";
+                  ORDER BY tasks.due_date ASC, (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END) ASC, tasks.created_at DESC";
         $this->db->query($query);
         return $this->db->resultSet();
     }
@@ -37,7 +37,7 @@ class Task_model {
             $query .= " AND (tasks.title LIKE :search OR projects.name LIKE :search)";
         }
 
-        $query .= " ORDER BY (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END), tasks.created_at DESC";
+        $query .= " ORDER BY tasks.due_date ASC, (CASE WHEN tasks.priority = 'tinggi' THEN 1 WHEN tasks.priority = 'sedang' THEN 2 ELSE 3 END) ASC";
 
         $this->db->query($query);
         
@@ -65,7 +65,7 @@ class Task_model {
                   LEFT JOIN projects ON tasks.project_id = projects.id 
                   LEFT JOIN users u ON tasks.assignee_id = u.id 
                   WHERE tasks.assignee_id = :user_id 
-                  ORDER BY tasks.created_at DESC";
+                  ORDER BY tasks.due_date ASC, tasks.created_at DESC";
         $this->db->query($query);
         $this->db->bind('user_id', $userId);
         return $this->db->resultSet();
@@ -77,7 +77,7 @@ class Task_model {
                   LEFT JOIN projects ON tasks.project_id = projects.id 
                   LEFT JOIN users u ON tasks.assignee_id = u.id 
                   WHERE tasks.status = :status 
-                  ORDER BY tasks.created_at DESC";
+                  ORDER BY tasks.due_date ASC, tasks.created_at DESC";
         $this->db->query($query);
         $this->db->bind('status', $status);
         return $this->db->resultSet();

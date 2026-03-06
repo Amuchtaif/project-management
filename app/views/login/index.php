@@ -26,10 +26,10 @@
 
     <div class="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row transition-colors border border-transparent dark:border-slate-800">
         <!-- Left Side: Form -->
-        <div class="w-full md:w-1/2 p-12">
+        <div class="w-full md:w-1/2 p-8 sm:p-12">
             
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 transition-colors">Selamat Datang Kembali</h1>
-            <p class="text-gray-500 dark:text-gray-400 mb-8 transition-colors">Masuk ke akun Anda untuk mengelola proyek</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-gray-100 mb-2 transition-colors">Selamat Datang Kembali</h1>
+            <p class="text-[13px] sm:text-sm text-gray-500 dark:text-gray-400 mb-8 transition-colors">Masuk ke akun Anda untuk mengelola proyek</p>
 
             <?php Flasher::flashInline(); ?>
 
@@ -49,7 +49,7 @@
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200">
+                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-none">
                     Login
                 </button>
             </form>
@@ -88,8 +88,8 @@
         function hideNotification() {
             const notification = document.getElementById('notification-bar');
             if (notification) {
-                notification.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => notification.remove(), 300);
+                notification.classList.add('-translate-y-10', 'opacity-0');
+                setTimeout(() => notification.remove(), 500);
             }
         }
 

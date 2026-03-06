@@ -6,22 +6,22 @@
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-900 bg-opacity-40 backdrop-blur-sm modal-overlay opacity-0" aria-hidden="true" onclick="toggleDeleteModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <div class="bg-white p-8">
+        <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-3xl text-left overflow-hidden shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-lg sm:w-full transition-colors">
+            <div class="bg-white dark:bg-slate-800 p-8">
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-2xl bg-red-50">
-                        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-2xl bg-red-50 dark:bg-red-900/20">
+                        <svg class="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900" id="modal-title">Konfirmasi Hapus</h3>
-                        <p class="text-gray-500 text-sm" id="deleteModalText">Apakah Anda yakin ingin menghapus data ini?</p>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100" id="modal-title">Konfirmasi Hapus</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm" id="deleteModalText">Apakah Anda yakin ingin menghapus data ini?</p>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row-reverse gap-3">
-                    <a id="confirmDeleteBtn" href="#" class="w-full inline-flex justify-center rounded-xl px-6 py-3 bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-lg shadow-red-100">Hapus Data</a>
-                    <button type="button" onclick="toggleDeleteModal()" class="w-full inline-flex justify-center rounded-xl px-6 py-3 bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition">Batal</button>
+                    <a id="confirmDeleteBtn" href="#" class="w-full inline-flex justify-center rounded-xl px-6 py-3 bg-red-600 text-white font-bold hover:bg-red-700 transition shadow-lg shadow-red-100 dark:shadow-none">Hapus Data</a>
+                    <button type="button" onclick="toggleDeleteModal()" class="w-full inline-flex justify-center rounded-xl px-6 py-3 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition">Batal</button>
                 </div>
             </div>
         </div>
@@ -51,8 +51,8 @@
     function hideNotification() {
         const notification = document.getElementById('notification-bar');
         if (notification) {
-            notification.classList.add('translate-x-full', 'opacity-0');
-            setTimeout(() => notification.remove(), 300);
+            notification.classList.add('-translate-y-10', 'opacity-0');
+            setTimeout(() => notification.remove(), 500);
         }
     }
 

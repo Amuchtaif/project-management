@@ -12,13 +12,22 @@ class Flasher {
 
     public static function flash() {
         if (isset($_SESSION['flash'])) {
-            $bg = $_SESSION['flash']['tipe'] == 'success' ? 'bg-green-100 border-green-500 text-green-700' : 'bg-red-100 border-red-500 text-red-700';
+            $isSuccess = $_SESSION['flash']['tipe'] == 'success';
+            $bg = $isSuccess 
+                ? 'bg-green-100 dark:bg-green-900/30 border-green-500 text-green-700 dark:text-green-400' 
+                : 'bg-red-100 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-400';
             
-            echo '<div id="notification-bar" class="fixed top-5 right-5 z-[9999] transform transition-all duration-500 translate-x-full">
-                    <div class="' . $bg . ' border-l-4 p-4 shadow-xl rounded-xl flex items-center justify-between min-w-[320px]" role="alert">
+            $iconBg = $isSuccess ? 'bg-white/50 dark:bg-green-800/20' : 'bg-white/50 dark:bg-red-800/20';
+            $iconColor = $isSuccess ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+            $iconSvg = $isSuccess 
+                ? '<svg class="w-5 h-5 ' . $iconColor . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
+                : '<svg class="w-5 h-5 ' . $iconColor . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            
+            echo '<div id="notification-bar" class="fixed top-8 left-1/2 -translate-x-1/2 z-[9999] transform transition-all duration-500 -translate-y-10 opacity-0 pointer-events-none">
+                    <div class="' . $bg . ' border-l-4 p-4 shadow-2xl rounded-2xl flex items-center justify-between min-w-[280px] xs:min-w-[320px] pointer-events-auto" role="alert">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 rounded-full bg-white/50">
-                                ' . ($_SESSION['flash']['tipe'] == 'success' ? '<svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : '<svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>') . '
+                            <div class="p-2 rounded-full ' . $iconBg . '">
+                                ' . $iconSvg . '
                             </div>
                             <div>
                                 <p class="font-black text-sm uppercase tracking-tight">' . ucfirst($_SESSION['flash']['tipe']) . '</p>
@@ -29,13 +38,15 @@ class Flasher {
                     <script>
                         setTimeout(() => {
                             const bar = document.getElementById("notification-bar");
-                            bar.classList.remove("translate-x-full");
+                            if(bar) bar.classList.remove("-translate-y-10", "opacity-0");
                         }, 100);
                         setTimeout(() => {
                             const bar = document.getElementById("notification-bar");
-                            bar.classList.add("translate-x-full");
-                            setTimeout(() => bar.remove(), 500);
-                        }, 3000);
+                            if(bar) {
+                                bar.classList.add("-translate-y-10", "opacity-0");
+                                setTimeout(() => bar.remove(), 500);
+                            }
+                        }, 4000);
                     </script>
                   </div>';
             

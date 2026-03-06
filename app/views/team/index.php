@@ -70,8 +70,8 @@
                     </td>
                     <td class="py-6">
                         <div class="flex items-center gap-2 transition-colors">
-                            <div class="w-2 h-2 rounded-full <?= $member['status'] == 'AKTIF' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-gray-300 dark:bg-slate-700'; ?>"></div>
-                            <span class="text-[11px] font-black tracking-widest <?= $member['status_color']; ?> italic transition-colors"><?= strtoupper($member['status'] ?? 'AKTIF'); ?></span>
+                            <div class="w-2 h-2 rounded-full <?= $member['status'] == 'AKTIF' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]'; ?>"></div>
+                            <span class="text-[11px] font-black tracking-widest <?= $member['status'] == 'AKTIF' ? 'text-green-500' : 'text-red-500'; ?> italic transition-colors"><?= strtoupper($member['status'] ?? 'AKTIF'); ?></span>
                         </div>
                     </td>
                     <td class="py-6 transition-colors">
@@ -230,7 +230,9 @@
         }
 
         // Initialize Custom Select
-        initCustomSelect('statusSelectContainer', 'status');
+        initCustomSelect('statusSelectContainer', 'status', (val) => {
+            document.getElementById('status_color').value = val === 'AKTIF' ? 'text-green-500' : 'text-red-500';
+        });
 
         const btnsTambah = document.querySelectorAll('.btnTambahTim');
         btnsTambah.forEach(btn => {
@@ -244,7 +246,9 @@
                 document.getElementById('password').removeAttribute('placeholder');
                 document.getElementById('password').setAttribute('placeholder', 'Masukkan kata sandi');
                 document.getElementById('passwordHint').innerText = '(kosongkan untuk default: namadepan123)';
-                initCustomSelect('statusSelectContainer', 'status');
+                initCustomSelect('statusSelectContainer', 'status', (val) => {
+                    document.getElementById('status_color').value = val === 'AKTIF' ? 'text-green-500' : 'text-red-500';
+                });
 
                 toggleTeamModal();
             });
@@ -269,7 +273,9 @@
                         // Set hidden input
                         document.getElementById('status').value = data.status || 'AKTIF';
                         // Sync visual
-                        initCustomSelect('statusSelectContainer', 'status');
+                        initCustomSelect('statusSelectContainer', 'status', (val) => {
+                            document.getElementById('status_color').value = val === 'AKTIF' ? 'text-green-500' : 'text-red-500';
+                        });
                         
                         document.getElementById('role_color').value = data.role_color || 'bg-blue-50 text-blue-600';
                         document.getElementById('status_color').value = data.status_color || 'text-green-500';

@@ -7,8 +7,8 @@
             <button class="md:hidden p-2 text-gray-400 hover:text-indigo-600 rounded-xl transition" onclick="toggleSidebar()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
-            <div class="relative w-48 sm:w-64 md:w-96">
-                <input type="text" placeholder="Cari..." class="w-full bg-gray-50 dark:bg-slate-800 border-none rounded-xl md:rounded-2xl px-10 py-2.5 md:py-3 text-sm dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition">
+            <div class="relative flex-grow max-w-[160px] sm:max-w-xs md:max-w-md">
+                <input type="text" placeholder="Cari..." class="w-full bg-gray-50 dark:bg-slate-800 border-none rounded-xl md:rounded-2xl px-9 md:px-10 py-2.5 md:py-3 text-[11px] md:text-sm dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition transition-colors">
                 <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400 absolute left-3 md:left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
         </div>
@@ -34,30 +34,34 @@
                     <?php endif; ?>
                 </button>
                 
-                <div class="dropdown-menu absolute top-full right-0 mt-2 w-80 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-xl py-3 hidden z-50">
-                    <div class="px-4 py-2 border-b border-gray-50 dark:border-slate-700 mb-2">
+                <div class="dropdown-menu fixed sm:absolute inset-x-4 sm:inset-auto top-20 sm:top-full sm:right-0 sm:mt-2 sm:w-80 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl shadow-2xl py-3 hidden z-50 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-50 dark:border-slate-700 mb-2">
                         <h4 class="text-sm font-black text-gray-900 dark:text-gray-100">Notifikasi Deadline</h4>
                     </div>
-                    <div class="max-h-64 overflow-y-auto">
+                    <div class="max-h-[60vh] sm:max-h-80 overflow-y-auto px-2">
                         <?php if (empty($data['notifications'])) : ?>
                             <div class="px-4 py-8 text-center">
                                 <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic transition-colors">Tidak ada tugas mendekati deadline.</p>
                             </div>
                         <?php else : ?>
                             <?php foreach ($data['notifications'] as $notif) : 
-                                $color = $notif['days_left'] == 1 
-                                    ? 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400' 
-                                    : 'border-orange-400 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-400';
+                                $isVeryNear = $notif['days_left'] <= 1;
+                                $borderColor = $isVeryNear ? 'border-red-500' : 'border-orange-400';
+                                $bgColor = $isVeryNear ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-orange-50/50 dark:bg-orange-900/10';
+                                $textColor = $isVeryNear ? 'text-red-700 dark:text-red-400' : 'text-orange-700 dark:text-orange-400';
                             ?>
-                                <a href="<?= BASEURL ?>/task?project_id=<?= $notif['project_id'] ?>" class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition border-l-4 <?= $color ?> mb-1 transition-colors">
-                                    <p class="text-xs font-black truncate transition-colors"><?= $notif['title'] ?></p>
-                                    <p class="text-[10px] opacity-70 mt-0.5 transition-colors">Deadline dalam <?= $notif['days_left'] ?> hari (<?= $notif['project_name'] ?>)</p>
+                                <a href="<?= BASEURL ?>/task?project_id=<?= $notif['project_id'] ?>" class="block px-4 py-4 hover:bg-white dark:hover:bg-slate-700 transition border-l-[6px] <?= $borderColor ?> <?= $bgColor ?> mb-2 rounded-xl transition-all hover:scale-[1.02] shadow-sm">
+                                    <p class="text-xs font-black <?= $textColor ?> mb-1 truncate"><?= $notif['title'] ?></p>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold opacity-80 uppercase tracking-tight">Deadline dalam <?= $notif['days_left'] ?> hari (<?= $notif['project_name'] ?>)</p>
                                 </a>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="px-4 py-2 border-t border-gray-50 dark:border-slate-700 mt-2">
-                        <a href="<?= BASEURL ?>/task" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Lihat Semua Tugas</a>
+                    <div class="px-6 py-4 border-t border-gray-50 dark:border-slate-700 mt-2">
+                        <a href="<?= BASEURL ?>/task" class="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-2">
+                            Lihat Semua Tugas
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                        </a>
                     </div>
                 </div>
             </div>

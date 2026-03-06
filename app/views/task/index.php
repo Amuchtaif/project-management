@@ -92,16 +92,16 @@
                 $deadlineClass = "bg-gray-100 text-gray-500";
                 if ($daysLeft < 0) {
                     $deadlineLabel = "TERLAMBAT " . abs($daysLeft) . " HARI";
-                    $deadlineClass = "bg-red-500 text-white shadow-lg shadow-red-100";
+                    $deadlineClass = "bg-red-500 text-white shadow-lg shadow-red-100 dark:shadow-none";
                 } elseif ($daysLeft == 0) {
                     $deadlineLabel = "HARI INI";
-                    $deadlineClass = "bg-orange-500 text-white shadow-lg shadow-orange-100";
+                    $deadlineClass = "bg-orange-500 text-white shadow-lg shadow-orange-100 dark:shadow-none";
                 } elseif ($daysLeft == 1) {
                     $deadlineLabel = "H-1";
-                    $deadlineClass = "bg-red-400 text-white shadow-lg shadow-red-50";
+                    $deadlineClass = "bg-red-400 text-white shadow-lg shadow-red-50 dark:shadow-none";
                 } elseif ($daysLeft <= 3) {
                     $deadlineLabel = "H-" . $daysLeft;
-                    $deadlineClass = "bg-orange-400 text-white shadow-lg shadow-orange-50";
+                    $deadlineClass = "bg-orange-400 text-white shadow-lg shadow-orange-50 dark:shadow-none";
                 } else {
                     $deadlineLabel = "H-" . $daysLeft;
                     $deadlineClass = "bg-indigo-50 text-indigo-500 border border-indigo-100";
