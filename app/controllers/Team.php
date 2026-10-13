@@ -44,6 +44,13 @@ class Team extends Controller {
             exit;
         }
 
+        // Jangan izinkan menghapus akun administrator utama
+        if($id == 1) {
+            Flasher::setFlash('gagal', 'Akun Administrator utama tidak dapat dihapus', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
         $member = $this->model('Team_model')->getMemberById($id);
         if($this->model('Team_model')->deleteMember($id) > 0) {
             $this->model('Activity_model')->addActivity([
@@ -84,7 +91,7 @@ class Team extends Controller {
                 'icon' => '➕',
                 'icon_bg' => 'bg-indigo-50 text-indigo-600'
             ]);
-            Flasher::setFlash('berhasil', 'ditambahkan. Password default: [namadepan]123', 'success');
+            Flasher::setFlash('berhasil', 'ditambahkan. Password default: password123', 'success');
         } else {
             Flasher::setFlash('gagal', 'ditambahkan. Email mungkin sudah terdaftar.', 'danger');
         }
@@ -123,4 +130,102 @@ class Team extends Controller {
     public function getEdit($id) {
         echo json_encode($this->model('Team_model')->getMemberById($id));
     }
+
+    public function resetPassword() {
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses ke fitur ini', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        $id = $_POST['id'] ?? null;
+        $newPassword = trim($_POST['password'] ?? '');
+
+        if (!$id || empty($newPassword)) {
+            Flasher::setFlash('gagal', 'Kata sandi baru tidak boleh kosong', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        $member = $this->model('Team_model')->getMemberById($id);
+        if (!$member) {
+            Flasher::setFlash('gagal', 'Anggota tidak ditemukan', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        if ($this->model('Team_model')->resetPassword($id, $newPassword) > 0) {
+            $this->model('Activity_model')->addActivity([
+                'user_id' => $_SESSION['user']['id'],
+                'action' => 'mereset kata sandi',
+                'target' => $member['name'],
+                'status_from' => null,
+                'status_to' => null,
+                'info' => 'Kata sandi untuk ' . $member['name'] . ' telah berhasil direset oleh Administrator.',
+                'icon' => '🔑',
+                'icon_bg' => 'bg-amber-50 text-amber-600'
+            ]);
+            Flasher::setFlash('berhasil', 'Kata sandi untuk ' . $member['name'] . ' berhasil direset', 'success');
+        } else {
+            Flasher::setFlash('gagal', 'Kata sandi tidak berubah atau gagal direset', 'warning');
+        }
+
+        header('Location: ' . BASEURL . '/team');
+        exit;
+    }
+
+    public function changeAccess() {
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        $id = $_POST['id'] ?? null;
+        $systemRole = $_POST['system_role'] ?? null;
+
+        if (!$id || !in_array($systemRole, ['admin', 'member'])) {
+            Flasher::setFlash('gagal', 'Data hak akses tidak valid', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        if ($id == $_SESSION['user']['id']) {
+            Flasher::setFlash('gagal', 'Anda tidak dapat mengubah hak akses akun Anda sendiri', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        $member = $this->model('Team_model')->getMemberById($id);
+        if (!$member) {
+            Flasher::setFlash('gagal', 'Anggota tidak ditemukan', 'danger');
+            header('Location: ' . BASEURL . '/team');
+            exit;
+        }
+
+        if ($this->model('Team_model')->updateAccessRole($id, $systemRole) >= 0) {
+            $roleLabel = $systemRole === 'admin' ? 'Akses Penuh (Admin)' : 'Akses Terbatas (Member)';
+            $this->model('Activity_model')->addActivity([
+                'user_id' => $_SESSION['user']['id'],
+                'action' => 'mengubah hak akses',
+                'target' => $member['name'],
+                'status_from' => $member['role'],
+                'status_to' => $systemRole,
+                'info' => 'Hak akses untuk ' . $member['name'] . ' diubah menjadi ' . $roleLabel . '.',
+                'icon' => '🛡️',
+                'icon_bg' => 'bg-indigo-50 text-indigo-600'
+            ]);
+            Flasher::setFlash('berhasil', 'Hak akses ' . $member['name'] . ' berhasil diubah menjadi ' . $roleLabel, 'success');
+        } else {
+            Flasher::setFlash('gagal', 'Hak akses gagal diperbarui', 'danger');
+        }
+
+        header('Location: ' . BASEURL . '/team');
+        exit;
+    }
 }
+

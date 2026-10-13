@@ -11,13 +11,13 @@
                     <img src="<?= BASEURL; ?>/img/logo.png" alt="Logo" class="w-full h-full object-contain brightness-0 invert">
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-[15px] font-bold text-white leading-tight tracking-tight">Manajemen Proyek</span>
+                    <span class="text-[15px] font-bold text-white leading-tight tracking-tight">Manajemen Project</span>
                     <span class="text-[11px] font-semibold text-indigo-300 mt-0.5 capitalize"><?= $_SESSION['user']['role'] ?? 'Admin'; ?> Panel</span>
                 </div>
             </div>
             <!-- MOBILE CLOSE BUTTON -->
             <button class="md:hidden p-2 text-white/50 hover:text-white transition" onclick="toggleSidebar()">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
 
@@ -27,29 +27,43 @@
         <nav class="space-y-1.5 transition-colors">
             <a href="<?= BASEURL; ?>/dashboard" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Dashboard') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
                 <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Dashboard') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
-                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <i class="fa-solid fa-house text-base"></i>
                 </div>
                 <span class="text-sm font-bold tracking-wide">Dashboard</span>
             </a>
             
-            <a href="<?= BASEURL; ?>/project" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Proyek') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
-                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Proyek') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
-                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <a href="<?= BASEURL; ?>/project" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Project') !== false || strpos($data['judul'], 'Proyek') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Project') !== false || strpos($data['judul'], 'Proyek') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
+                    <i class="fa-solid fa-folder-open text-base"></i>
                 </div>
-                <span class="text-sm font-bold tracking-wide">Proyek</span>
+                <span class="text-sm font-bold tracking-wide">Project</span>
             </a>
 
-            <a href="<?= BASEURL; ?>/task" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Tugas') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
-                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Tugas') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
-                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <a href="<?= BASEURL; ?>/task" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Tugas') !== false && strpos($data['judul'], 'Kalender') === false && strpos($data['judul'], 'Roadmap') === false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Tugas') !== false && strpos($data['judul'], 'Kalender') === false && strpos($data['judul'], 'Roadmap') === false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
+                    <i class="fa-solid fa-list-check text-base"></i>
                 </div>
-                <span class="text-sm font-bold tracking-wide">Tugas</span>
+                <span class="text-sm font-bold tracking-wide">Papan Tugas</span>
+            </a>
+
+            <a href="<?= BASEURL; ?>/task/calendar" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Kalender') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Kalender') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
+                    <i class="fa-solid fa-calendar-days text-base"></i>
+                </div>
+                <span class="text-sm font-bold tracking-wide">Kalender Tugas</span>
+            </a>
+
+            <a href="<?= BASEURL; ?>/task/timeline" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Roadmap') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Roadmap') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
+                    <i class="fa-solid fa-timeline text-base"></i>
+                </div>
+                <span class="text-sm font-bold tracking-wide">Timeline</span>
             </a>
 
             <?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
-            <a href="<?= BASEURL; ?>/team" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Tim') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
-                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Tim') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
-                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <a href="<?= BASEURL; ?>/team" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Tim') !== false && strpos($data['judul'], 'Timeline') === false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Tim') !== false && strpos($data['judul'], 'Timeline') === false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
+                    <i class="fa-solid fa-users text-base"></i>
                 </div>
                 <span class="text-sm font-bold tracking-wide">Tim</span>
             </a>
@@ -57,10 +71,24 @@
 
             <a href="<?= BASEURL; ?>/activity" class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Aktivitas') !== false) ? 'bg-white text-[#313491] dark:bg-slate-800 dark:text-indigo-400 shadow-lg shadow-black/10' : 'text-indigo-100 hover:bg-white/10 dark:hover:bg-slate-800/50' ?>">
                 <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Aktivitas') !== false) ? 'text-[#313491] dark:text-indigo-400' : 'text-indigo-300 group-hover:text-white' ?>">
-                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <i class="fa-solid fa-clock-rotate-left text-base"></i>
                 </div>
                 <span class="text-sm font-bold tracking-wide">Log Aktivitas</span>
             </a>
+
+            <?php if(isset($_SESSION['user']) && (int)$_SESSION['user']['id'] === 1) : ?>
+            <div class="pt-3 mt-3 border-white/10 dark:border-slate-800">
+                <span class="text-[10px] font-black text-rose-300/60 uppercase tracking-wider ml-3 mb-1.5 block">Sistem & Keamanan</span>
+                <a href="<?= BASEURL; ?>/danger" class="group flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl transition-all duration-200 <?= (strpos($data['judul'], 'Danger') !== false) ? 'bg-rose-600 text-white shadow-lg shadow-rose-900/30' : 'text-rose-200 hover:bg-rose-500/20 dark:hover:bg-rose-950/40' ?>">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors <?= (strpos($data['judul'], 'Danger') !== false) ? 'text-white' : 'text-rose-400 group-hover:text-rose-300' ?>">
+                            <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                        </div>
+                        <span class="text-sm font-bold tracking-wide truncate">Danger Area</span>
+                    </div>
+                </a>
+            </div>
+            <?php endif; ?>
         </nav>
     </div>
 
@@ -75,7 +103,7 @@
                 </div>
             </div>
             <a href="<?= BASEURL; ?>/login/logout" class="text-indigo-300 dark:text-slate-500 hover:text-red-400 transition flex-shrink-0">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <i class="fa-solid fa-right-from-bracket text-lg"></i>
             </a>
         </div>
     </div>

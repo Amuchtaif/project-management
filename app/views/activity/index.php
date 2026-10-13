@@ -5,9 +5,9 @@
         <!-- Date Filter -->
         <div class="relative custom-dropdown" id="dateDropdown">
             <button onclick="toggleDropdown('dateDropdown')" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition transition-colors">
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"></path></svg>
+                <i class="fa-solid fa-calendar-days text-xs text-gray-400 dark:text-gray-500"></i>
                 <?= isset($_GET['date']) ? date('d M Y', strtotime($_GET['date'])) : 'Pilih Tanggal' ?>
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 dark:text-gray-500"></i>
             </button>
             <div class="dropdown-menu absolute top-full left-0 mt-2 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl p-4 hidden z-50 min-w-[200px] transition-colors">
                 <div class="flex flex-col gap-3">
@@ -24,7 +24,7 @@
         <?php if($data['user_role'] === 'admin') : ?>
         <div class="relative custom-dropdown" id="userDropdown">
             <button onclick="toggleDropdown('userDropdown')" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition transition-colors">
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <i class="fa-solid fa-user text-xs text-gray-400 dark:text-gray-500"></i>
                 <?php 
                     $selectedUser = 'Semua Anggota';
                     if(isset($_GET['user_id'])) {
@@ -34,7 +34,7 @@
                     }
                     echo $selectedUser;
                 ?>
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 dark:text-gray-500"></i>
             </button>
             <div class="dropdown-menu absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl py-2 hidden z-50 max-h-60 overflow-y-auto transition-colors">
                 <button onclick="applyFilter('user_id', '')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors <?= !isset($_GET['user_id']) ? 'font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-900/20' : '' ?>">Semua Anggota</button>
@@ -48,12 +48,12 @@
         <!-- Activity Type Filter -->
         <div class="relative custom-dropdown" id="typeDropdown">
             <button onclick="toggleDropdown('typeDropdown')" class="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition transition-colors">
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                <i class="fa-solid fa-layer-group text-xs text-gray-400 dark:text-gray-500"></i>
                 <?php
                     $types = ['menambah' => 'Menambah', 'mengubah' => 'Mengubah', 'menghapus' => 'Menghapus'];
                     echo isset($_GET['type']) ? ($types[$_GET['type']] ?? 'Tipe Aktivitas') : 'Tipe Aktivitas';
                 ?>
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <i class="fa-solid fa-chevron-down text-xs text-gray-400 dark:text-gray-500"></i>
             </button>
             <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl py-2 hidden z-50 transition-colors">
                 <button onclick="applyFilter('type', '')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors <?= !isset($_GET['type']) ? 'font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-900/20' : '' ?>">Semua Tipe</button>
@@ -65,7 +65,7 @@
     </div>
 
     <button class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm hover:text-indigo-800 dark:hover:text-indigo-300 transition transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <i class="fa-solid fa-download text-xs"></i>
         Ekspor CSV
     </button>
 </div>
@@ -74,7 +74,7 @@
     <?php if(empty($data['activities'])) : ?>
         <div class="bg-white dark:bg-slate-800 p-12 rounded-[2rem] border border-gray-100 dark:border-slate-700 shadow-sm text-center transition-colors">
             <div class="w-20 h-20 bg-gray-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors">
-                <svg class="w-10 h-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <i class="fa-solid fa-clock-rotate-left text-3xl text-gray-300 dark:text-gray-600"></i>
             </div>
             <h3 class="text-xl font-extrabold text-[#111827] dark:text-gray-100 mb-2 tracking-tight transition-colors">Belum ada aktivitas</h3>
             <p class="text-gray-400 dark:text-gray-500 font-bold transition-colors">Semua aktivitas tim akan muncul di sini secara real-time.</p>

@@ -9,10 +9,11 @@ class Team_model {
     }
 
     /**
-     * Ambil semua anggota tim (semua user kecuali bisa difilter)
+     * Ambil semua anggota tim (exclude user administrator utama sistem)
+     * User yang memiliki hak akses admin tetap ditampilkan kecuali akun Administrator utama
      */
     public function getAllTeam() {
-        $this->db->query("SELECT * FROM " . $this->table . " WHERE role = 'member' ORDER BY created_at DESC");
+        $this->db->query("SELECT * FROM " . $this->table . " WHERE id != 1 AND email != 'admin@gmail.com' AND LOWER(name) != 'administrator' ORDER BY created_at DESC");
         return $this->db->resultSet();
     }
 
@@ -26,7 +27,7 @@ class Team_model {
     }
 
     /**
-     * Tambah anggota baru — otomatis buat akun user dengan password ter-hash
+     * Tambah anggota baru — otomatis buat akun user dengan password ter-hash & hak akses sistem
      */
     public function addMember($data) {
         // Cek apakah email sudah terdaftar
@@ -38,18 +39,23 @@ class Team_model {
             return 0; // Email sudah terdaftar
         }
 
-        // Hash password — gunakan password dari form, atau generate default
+        // Hash password — gunakan password dari form, atau generate default password123
         $password = !empty($data['password']) 
             ? $data['password'] 
-            : strtolower(str_replace(' ', '', $data['name'])) . '123';
+            : 'password123';
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
+        $systemRole = (!empty($data['system_role']) && in_array($data['system_role'], ['admin', 'member'])) 
+            ? $data['system_role'] 
+            : 'member';
+
         $query = "INSERT INTO users (name, email, password, role, role_label, department, status, role_color, status_color, last_active) 
-                  VALUES (:name, :email, :password, 'member', :role_label, :department, :status, :role_color, :status_color, NOW())";
+                  VALUES (:name, :email, :password, :role, :role_label, :department, :status, :role_color, :status_color, NOW())";
         $this->db->query($query);
         $this->db->bind('name', $data['name']);
         $this->db->bind('email', $data['email']);
         $this->db->bind('password', $hashedPassword);
+        $this->db->bind('role', $systemRole);
         $this->db->bind('role_label', $data['role']);
         $this->db->bind('department', $data['department']);
         $this->db->bind('status', $data['status']);
@@ -60,23 +66,33 @@ class Team_model {
     }
 
     /**
-     * Update data anggota (tanpa mengubah password kecuali diminta)
+     * Update data anggota (termasuk hak akses dan password jika diisi)
      */
     public function updateMember($data) {
+        $systemRole = (!empty($data['system_role']) && in_array($data['system_role'], ['admin', 'member'])) 
+            ? $data['system_role'] 
+            : 'member';
+
+        // Cegah admin mendemote akunnya sendiri
+        if (isset($_SESSION['user']['id']) && $data['id'] == $_SESSION['user']['id']) {
+            $systemRole = $_SESSION['user']['role'];
+        }
+
         // Jika password baru diisi, update juga password-nya
         if (!empty($data['password'])) {
             $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
-            $query = "UPDATE users SET name=:name, email=:email, password=:password, role_label=:role_label, department=:department, status=:status, role_color=:role_color, status_color=:status_color WHERE id=:id";
+            $query = "UPDATE users SET name=:name, email=:email, password=:password, role=:role, role_label=:role_label, department=:department, status=:status, role_color=:role_color, status_color=:status_color WHERE id=:id";
             $this->db->query($query);
             $this->db->bind('password', $hashedPassword);
         } else {
-            $query = "UPDATE users SET name=:name, email=:email, role_label=:role_label, department=:department, status=:status, role_color=:role_color, status_color=:status_color WHERE id=:id";
+            $query = "UPDATE users SET name=:name, email=:email, role=:role, role_label=:role_label, department=:department, status=:status, role_color=:role_color, status_color=:status_color WHERE id=:id";
             $this->db->query($query);
         }
         
         $this->db->bind('id', $data['id']);
         $this->db->bind('name', $data['name']);
         $this->db->bind('email', $data['email']);
+        $this->db->bind('role', $systemRole);
         $this->db->bind('role_label', $data['role']);
         $this->db->bind('department', $data['department']);
         $this->db->bind('status', $data['status']);
@@ -85,6 +101,33 @@ class Team_model {
         $this->db->execute();
         return $this->db->rowCount();
     }
+
+    /**
+     * Reset password anggota
+     */
+    public function resetPassword($id, $newPassword) {
+        $hashed = password_hash($newPassword, PASSWORD_BCRYPT);
+        $this->db->query("UPDATE " . $this->table . " SET password = :password WHERE id = :id");
+        $this->db->bind('id', $id);
+        $this->db->bind('password', $hashed);
+        $this->db->execute();
+        return $this->db->rowCount();
+    }
+
+    /**
+     * Update hak akses sistem (admin vs member)
+     */
+    public function updateAccessRole($id, $systemRole) {
+        if (!in_array($systemRole, ['admin', 'member'])) {
+            return 0;
+        }
+        $this->db->query("UPDATE " . $this->table . " SET role = :role WHERE id = :id");
+        $this->db->bind('id', $id);
+        $this->db->bind('role', $systemRole);
+        $this->db->execute();
+        return $this->db->rowCount();
+    }
+
 
     /**
      * Hapus anggota

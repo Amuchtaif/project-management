@@ -17,6 +17,7 @@
         }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="icon" type="image/png" href="<?= BASEURL; ?>/img/favicon.png">
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -197,6 +198,7 @@
             const options = Array.from(container.querySelectorAll('.select-option'));
             const hiddenInput = document.getElementById(inputId);
             const triggerText = container.querySelector('.select-trigger-text');
+            const searchInput = container.querySelector('.select-search-input');
             
             if (!hiddenInput) {
                 console.error('initCustomSelect: Hidden input not found for ID', inputId);
@@ -207,18 +209,41 @@
             if (!container.dataset.initialized) {
                 trigger.onclick = (e) => {
                     e.stopPropagation();
+                    const wasActive = trigger.classList.contains('active');
                     // Close all other dropdown triggers
                     document.querySelectorAll('.select-trigger').forEach(t => {
                         if (t !== trigger) t.classList.remove('active');
                     });
                     trigger.classList.toggle('active');
+                    if (!wasActive && searchInput) {
+                        setTimeout(() => searchInput.focus(), 80);
+                    }
                 };
+
+                if (searchInput) {
+                    searchInput.onclick = (e) => e.stopPropagation();
+                    searchInput.oninput = (e) => {
+                        const query = e.target.value.toLowerCase().trim();
+                        let matches = 0;
+                        options.forEach(opt => {
+                            if (opt.classList.contains('excluded-member')) return;
+                            const text = (opt.getAttribute('data-search') || opt.getAttribute('data-name') || opt.textContent).toLowerCase();
+                            const match = text.includes(query);
+                            opt.style.display = match ? '' : 'none';
+                            if (match) matches++;
+                        });
+                        let noMatchEl = container.querySelector('.select-no-results');
+                        if (noMatchEl) {
+                            noMatchEl.style.display = (matches === 0) ? 'block' : 'none';
+                        }
+                    };
+                }
 
                 options.forEach(opt => {
                     opt.onclick = (e) => {
                         e.stopPropagation();
                         const value = opt.getAttribute('data-value');
-                        const text = opt.textContent.trim();
+                        const text = opt.getAttribute('data-name') || opt.textContent.trim();
                         
                         hiddenInput.value = value;
                         triggerText.textContent = text;
@@ -229,6 +254,15 @@
                         opt.classList.add('selected');
                         
                         trigger.classList.remove('active');
+
+                        if (searchInput) {
+                            searchInput.value = '';
+                            options.forEach(o => {
+                                if (!o.classList.contains('excluded-member')) o.style.display = '';
+                            });
+                            const noMatchEl = container.querySelector('.select-no-results');
+                            if (noMatchEl) noMatchEl.style.display = 'none';
+                        }
 
                         if (onSelect) onSelect(value, text);
                         
@@ -244,7 +278,8 @@
             const matchingOpt = options.find(o => o.getAttribute('data-value') === currentVal);
             
             if (matchingOpt) {
-                triggerText.textContent = matchingOpt.textContent.trim();
+                const text = matchingOpt.getAttribute('data-name') || matchingOpt.textContent.trim();
+                triggerText.textContent = text;
                 triggerText.classList.remove('text-gray-400');
                 triggerText.classList.add('text-gray-900');
                 options.forEach(o => o.classList.remove('selected'));
@@ -267,44 +302,99 @@
             const options = Array.from(container.querySelectorAll('.select-option'));
             const hiddenInput = document.getElementById(inputId);
             const triggerText = container.querySelector('.select-trigger-text');
+            const searchInput = container.querySelector('.select-search-input');
+            const selectAllBtn = container.querySelector('.select-all-btn');
+            const clearAllBtn = container.querySelector('.select-clear-btn');
+            const countBadge = container.querySelector('.select-count-badge');
             
             if (!hiddenInput) return;
+
+            function updateTriggerDisplay() {
+                const selectedOpts = options.filter(o => o.classList.contains('selected'));
+                const values = selectedOpts.map(o => o.getAttribute('data-value'));
+                const texts = selectedOpts.map(o => o.getAttribute('data-name') || o.textContent.trim());
+                
+                hiddenInput.value = JSON.stringify(values);
+
+                if (countBadge) {
+                    countBadge.innerText = values.length + ' dipilih';
+                    countBadge.style.display = values.length > 0 ? '' : 'none';
+                }
+                
+                if (values.length > 0) {
+                    triggerText.textContent = texts.length > 2 
+                        ? texts.slice(0, 2).join(', ') + '... (+' + (texts.length - 2) + ')'
+                        : texts.join(', ');
+                    triggerText.classList.remove('text-gray-400');
+                    triggerText.classList.add('text-gray-900');
+                } else {
+                    const placeholder = trigger.getAttribute('data-placeholder') || 'Pilih...';
+                    triggerText.textContent = placeholder;
+                    triggerText.classList.add('text-gray-400');
+                    triggerText.classList.remove('text-gray-900');
+                }
+
+                if (onSelect) onSelect(values);
+                hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }
 
             if (!container.dataset.multiInitialized) {
                 trigger.onclick = (e) => {
                     e.stopPropagation();
+                    const wasActive = trigger.classList.contains('active');
                     document.querySelectorAll('.select-trigger').forEach(t => {
                         if (t !== trigger) t.classList.remove('active');
                     });
                     trigger.classList.toggle('active');
+                    if (!wasActive && searchInput) {
+                        setTimeout(() => searchInput.focus(), 80);
+                    }
                 };
+
+                if (searchInput) {
+                    searchInput.onclick = (e) => e.stopPropagation();
+                    searchInput.oninput = (e) => {
+                        const query = e.target.value.toLowerCase().trim();
+                        let matches = 0;
+                        options.forEach(opt => {
+                            if (opt.classList.contains('excluded-member')) return;
+                            const text = (opt.getAttribute('data-name') || opt.textContent).toLowerCase();
+                            const match = text.includes(query);
+                            opt.style.display = match ? '' : 'none';
+                            if (match) matches++;
+                        });
+                        let noMatchEl = container.querySelector('.select-no-results');
+                        if (noMatchEl) {
+                            noMatchEl.style.display = (matches === 0) ? 'block' : 'none';
+                        }
+                    };
+                }
+
+                if (selectAllBtn) {
+                    selectAllBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        options.forEach(opt => {
+                            if (!opt.classList.contains('excluded-member') && opt.style.display !== 'none') {
+                                opt.classList.add('selected');
+                            }
+                        });
+                        updateTriggerDisplay();
+                    };
+                }
+
+                if (clearAllBtn) {
+                    clearAllBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        updateTriggerDisplay();
+                    };
+                }
 
                 options.forEach(opt => {
                     opt.onclick = (e) => {
                         e.stopPropagation();
                         opt.classList.toggle('selected');
-                        
-                        const selectedOpts = options.filter(o => o.classList.contains('selected'));
-                        const values = selectedOpts.map(o => o.getAttribute('data-value'));
-                        const texts = selectedOpts.map(o => o.textContent.trim());
-                        
-                        hiddenInput.value = JSON.stringify(values);
-                        
-                        if (values.length > 0) {
-                            triggerText.textContent = texts.length > 2 
-                                ? texts.slice(0, 2).join(', ') + '... (+' + (texts.length - 2) + ')'
-                                : texts.join(', ');
-                            triggerText.classList.remove('text-gray-400');
-                            triggerText.classList.add('text-gray-900');
-                        } else {
-                            const placeholder = trigger.getAttribute('data-placeholder') || 'Pilih...';
-                            triggerText.textContent = placeholder;
-                            triggerText.classList.add('text-gray-400');
-                            triggerText.classList.remove('text-gray-900');
-                        }
-
-                        if (onSelect) onSelect(values);
-                        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                        updateTriggerDisplay();
                     };
                 });
                 container.dataset.multiInitialized = "true";
@@ -329,7 +419,13 @@
                 });
                 
                 const selectedOpts = options.filter(o => o.classList.contains('selected'));
-                const texts = selectedOpts.map(o => o.textContent.trim());
+                const texts = selectedOpts.map(o => o.getAttribute('data-name') || o.textContent.trim());
+
+                if (countBadge) {
+                    countBadge.innerText = currentVals.length + ' dipilih';
+                    countBadge.style.display = currentVals.length > 0 ? '' : 'none';
+                }
+
                 if (texts.length > 0) {
                     triggerText.textContent = texts.length > 2 
                         ? texts.slice(0, 2).join(', ') + '... (+' + (texts.length - 2) + ')'

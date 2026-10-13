@@ -10,70 +10,117 @@ class Flasher {
         ];
     }
 
+    private static function formatMessage($pesan, $aksi) {
+        $pesan = trim($pesan ?? '');
+        $aksi = trim($aksi ?? '');
+        if (empty($aksi)) {
+            $text = $pesan;
+        } elseif (strtolower($pesan) === 'berhasil' && in_array(strtolower($aksi), ['dihapus', 'ditambahkan', 'diperbarui'])) {
+            $text = 'Data berhasil ' . $aksi;
+        } elseif (strtolower($pesan) === 'gagal' && in_array(strtolower($aksi), ['dihapus', 'ditambahkan', 'diperbarui'])) {
+            $text = 'Data gagal ' . $aksi;
+        } elseif (stripos($aksi, $pesan) !== false) {
+            $text = $aksi;
+        } else {
+            $text = $pesan . ' ' . $aksi;
+        }
+        $text = ucfirst(trim($text));
+        if (!empty($text) && !in_array(substr($text, -1), ['.', '!', '?'])) {
+            $text .= '.';
+        }
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+
     public static function flash() {
         if (isset($_SESSION['flash'])) {
-            $isSuccess = $_SESSION['flash']['tipe'] == 'success';
-            $bg = $isSuccess 
-                ? 'bg-green-100 dark:bg-green-900/30 border-green-500 text-green-700 dark:text-green-400' 
-                : 'bg-red-100 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-400';
+            $rawTipe = strtolower($_SESSION['flash']['tipe'] ?? 'success');
             
-            $iconBg = $isSuccess ? 'bg-white/50 dark:bg-green-800/20' : 'bg-white/50 dark:bg-red-800/20';
-            $iconColor = $isSuccess ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
-            $iconSvg = $isSuccess 
-                ? '<svg class="w-5 h-5 ' . $iconColor . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-                : '<svg class="w-5 h-5 ' . $iconColor . '" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            if ($rawTipe === 'success') {
+                $bgClass = 'bg-emerald-600';
+                $iconClass = 'fa-solid fa-check';
+                $titleText = 'Berhasil';
+            } elseif ($rawTipe === 'warning') {
+                $bgClass = 'bg-amber-600';
+                $iconClass = 'fa-solid fa-triangle-exclamation';
+                $titleText = 'Perhatian';
+            } elseif ($rawTipe === 'info') {
+                $bgClass = 'bg-indigo-600';
+                $iconClass = 'fa-solid fa-info';
+                $titleText = 'Informasi';
+            } else {
+                $bgClass = 'bg-rose-600';
+                $iconClass = 'fa-solid fa-xmark';
+                $titleText = 'Gagal';
+            }
+
+            $message = self::formatMessage($_SESSION['flash']['pesan'], $_SESSION['flash']['aksi']);
             
-            echo '<div id="notification-bar" class="fixed top-8 left-1/2 -translate-x-1/2 z-[9999] transform transition-all duration-500 -translate-y-10 opacity-0 pointer-events-none">
-                    <div class="' . $bg . ' border-l-4 p-4 shadow-2xl rounded-2xl flex items-center justify-between min-w-[280px] xs:min-w-[320px] pointer-events-auto" role="alert">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 rounded-full ' . $iconBg . '">
-                                ' . $iconSvg . '
+            echo '<div id="notification-bar" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] max-w-[92vw] sm:max-w-md w-full pointer-events-none transform transition-all duration-300 ease-out -translate-y-8 opacity-0 scale-95">
+                    <div class="' . $bgClass . ' text-white px-4 py-3 sm:px-4.5 sm:py-3.5 rounded-2xl shadow-xl shadow-black/20 border border-white/20 flex items-center justify-between gap-3 pointer-events-auto relative overflow-hidden" role="alert">
+                        <div class="flex items-center gap-3.5 min-w-0 flex-1">
+                            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0 text-white shadow-inner">
+                                <i class="' . $iconClass . ' text-sm"></i>
                             </div>
-                            <div>
-                                <p class="font-black text-sm uppercase tracking-tight">' . ucfirst($_SESSION['flash']['tipe']) . '</p>
-                                <p class="text-xs font-bold opacity-80">' . $_SESSION['flash']['pesan'] . ' ' . $_SESSION['flash']['aksi'] . '.</p>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-white/80 leading-none mb-1">' . $titleText . '</p>
+                                <p class="text-xs sm:text-sm font-semibold text-white leading-snug break-words">' . $message . '</p>
                             </div>
+                        </div>
+                        <button type="button" onclick="hideNotification()" class="p-1.5 text-white/70 hover:text-white hover:bg-white/20 rounded-xl transition flex-shrink-0" title="Tutup notifikasi">
+                            <i class="fa-solid fa-xmark text-xs"></i>
+                        </button>
+                        <div class="absolute bottom-0 left-0 right-0 h-[3px] bg-white/20">
+                            <div id="toast-progress-bar" class="h-full bg-white/60 transition-all duration-[3500ms] ease-linear w-full"></div>
                         </div>
                     </div>
                     <script>
                         setTimeout(() => {
                             const bar = document.getElementById("notification-bar");
-                            if(bar) bar.classList.remove("-translate-y-10", "opacity-0");
-                        }, 100);
-                        setTimeout(() => {
-                            const bar = document.getElementById("notification-bar");
-                            if(bar) {
-                                bar.classList.add("-translate-y-10", "opacity-0");
-                                setTimeout(() => bar.remove(), 500);
+                            if (bar) {
+                                bar.classList.remove("-translate-y-8", "opacity-0", "scale-95");
+                                bar.classList.add("translate-y-0", "opacity-100", "scale-100");
                             }
-                        }, 4000);
+                            const prog = document.getElementById("toast-progress-bar");
+                            if (prog) prog.style.width = "0%";
+                        }, 30);
+                        if (typeof notificationTimer !== "undefined" && notificationTimer) clearTimeout(notificationTimer);
+                        notificationTimer = setTimeout(() => {
+                            if (typeof hideNotification === "function") hideNotification();
+                        }, 3600);
                     </script>
                   </div>';
             
             unset($_SESSION['flash']);
         }
     }
+
     public static function flashInline() {
         if (isset($_SESSION['flash'])) {
-            $isSuccess = $_SESSION['flash']['tipe'] == 'success';
-            $bg = $isSuccess ? 'bg-emerald-600 shadow-emerald-100' : 'bg-rose-600 shadow-rose-100';
-            $icon = $isSuccess 
-                ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
-                : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+            $rawTipe = strtolower($_SESSION['flash']['tipe'] ?? 'success');
+            $isSuccess = ($rawTipe === 'success');
             
-            echo '<div id="inline-notification" class="flex items-center gap-4 p-4 mb-8 text-white ' . $bg . ' rounded-2xl shadow-lg transition-all duration-500 overflow-hidden relative">
-                    <div class="flex-shrink-0 bg-white/20 p-2 rounded-xl">
+            $bg = $isSuccess ? 'bg-emerald-600' : 'bg-rose-600';
+            $icon = $isSuccess 
+                ? '<i class="fa-solid fa-check text-base"></i>'
+                : '<i class="fa-solid fa-xmark text-base"></i>';
+            $title = $isSuccess ? 'Berhasil' : 'Pemberitahuan';
+            $message = self::formatMessage($_SESSION['flash']['pesan'], $_SESSION['flash']['aksi']);
+            
+            echo '<div id="inline-notification" class="flex items-center gap-3.5 p-4 mb-6 text-white ' . $bg . ' rounded-2xl shadow-lg border border-white/20 transition-all duration-300 overflow-hidden relative">
+                    <div class="flex-shrink-0 bg-white/20 w-9 h-9 rounded-xl flex items-center justify-center">
                         ' . $icon . '
                     </div>
-                    <div class="flex-grow">
-                        <p class="text-xs font-black uppercase tracking-[0.1em] opacity-80 mb-0.5">' . $_SESSION['flash']['pesan'] . '</p>
-                        <p class="text-sm font-bold leading-tight">' . ucfirst($_SESSION['flash']['aksi']) . '</p>
+                    <div class="flex-grow min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-white/80 leading-none mb-1">' . $title . '</p>
+                        <p class="text-xs sm:text-sm font-semibold text-white leading-snug break-words">' . $message . '</p>
                     </div>
-                    <div class="absolute bottom-0 left-0 h-1 bg-white/30 transition-all duration-[3000ms] ease-linear w-full" id="notification-progress"></div>
+                    <div class="absolute bottom-0 left-0 right-0 h-[3px] bg-white/20">
+                        <div id="inline-notification-progress" class="h-full bg-white/60 transition-all duration-[3000ms] ease-linear w-full"></div>
+                    </div>
                     
                     <script>
                         setTimeout(() => {
-                            const bar = document.getElementById("notification-progress");
+                            const bar = document.getElementById("inline-notification-progress");
                             if(bar) bar.style.width = "0%";
                         }, 10);
                         
@@ -81,9 +128,9 @@ class Flasher {
                             const notify = document.getElementById("inline-notification");
                             if(notify) {
                                 notify.classList.add("opacity-0", "scale-95", "-translate-y-2");
-                                setTimeout(() => notify.remove(), 500);
+                                setTimeout(() => notify.remove(), 300);
                             }
-                        }, 3000);
+                        }, 3300);
                     </script>
                   </div>';
             

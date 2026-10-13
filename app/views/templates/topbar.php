@@ -5,62 +5,117 @@
         <div class="flex items-center gap-4">
             <!-- MOBILE MENU TOGGLE -->
             <button class="md:hidden p-2 text-gray-400 hover:text-indigo-600 rounded-xl transition" onclick="toggleSidebar()">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <i class="fa-solid fa-bars text-lg"></i>
             </button>
-            <div class="relative flex-grow max-w-[160px] sm:max-w-xs md:max-w-md">
-                <input type="text" placeholder="Cari..." class="w-full bg-gray-50 dark:bg-slate-800 border-none rounded-xl md:rounded-2xl px-9 md:px-10 py-2.5 md:py-3 text-[11px] md:text-sm dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none transition transition-colors">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400 absolute left-3 md:left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div class="relative flex-grow max-w-[160px] sm:max-w-xs md:max-w-md cursor-pointer" onclick="openCommandPalette()">
+                <input type="text" placeholder="Cari... (Ctrl + K)" readonly class="w-full bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700/80 rounded-xl md:rounded-2xl pl-9 pr-14 md:pl-10 md:pr-16 py-2.5 md:py-3 text-[11px] md:text-sm text-gray-500 dark:text-gray-300 focus:outline-none cursor-pointer transition select-none">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 text-sm pointer-events-none"></i>
+                <kbd class="hidden sm:flex items-center gap-0.5 absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 text-[10px] font-black text-gray-400 dark:text-gray-500 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg shadow-xs pointer-events-none">
+                    <span class="text-[9px]">⌘</span>K
+                </kbd>
             </div>
         </div>
         <div class="flex items-center gap-2 md:gap-4">
             <!-- Theme Toggle (Desktop Only) -->
             <button onclick="toggleDarkMode()" class="hidden sm:flex p-2 text-gray-400 hover:text-indigo-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition relative overflow-hidden" id="theme-toggle">
                 <!-- Sun Icon -->
-                <svg id="sun-icon" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
-                </svg>
+                <i id="sun-icon" class="fa-solid fa-sun text-lg hidden dark:block"></i>
                 <!-- Moon Icon -->
-                <svg id="moon-icon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
+                <i id="moon-icon" class="fa-solid fa-moon text-lg block dark:hidden"></i>
             </button>
 
             <!-- Notifications -->
             <div class="relative custom-dropdown" id="notifDropdown">
                 <button onclick="toggleDropdown('notifDropdown')" class="p-2 text-gray-400 hover:text-indigo-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition relative">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    <i class="fa-solid fa-bell text-lg"></i>
                     <?php if (!empty($data['notifications'])) : ?>
-                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+                        <span id="notifRedDot" class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white dark:border-slate-900 rounded-full animate-pulse"></span>
                     <?php endif; ?>
                 </button>
                 
-                <div class="dropdown-menu fixed sm:absolute inset-x-4 sm:inset-auto top-20 sm:top-full sm:right-0 sm:mt-2 sm:w-80 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl shadow-2xl py-3 hidden z-50 overflow-hidden">
-                    <div class="px-6 py-4 border-b border-gray-50 dark:border-slate-700 mb-2">
-                        <h4 class="text-sm font-black text-gray-900 dark:text-gray-100">Notifikasi Deadline</h4>
+                <div class="dropdown-menu fixed sm:absolute inset-x-4 sm:inset-auto top-20 sm:top-full sm:right-0 sm:mt-2 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl shadow-2xl py-3 hidden z-50 overflow-hidden" style="width: 360px; max-width: calc(100vw - 2rem);">
+                    <div class="px-5 py-3 border-b border-gray-100 dark:border-slate-700/80 mb-2 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <h4 class="text-sm font-black text-gray-900 dark:text-gray-100">Notifikasi</h4>
+                            <?php if (!empty($data['notifications'])) : ?>
+                                <span id="notifBadgeCount" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"><?= count($data['notifications']) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (!empty($data['notifications'])) : ?>
+                            <button type="button" id="btnClearAllNotif" onclick="clearAllNotifications(event)" class="text-[11px] font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 flex items-center gap-1.5 transition px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/30" title="Bersihkan semua notifikasi">
+                                <i class="fa-solid fa-trash-can text-[10px]"></i>
+                                <span>Clear Semua</span>
+                            </button>
+                        <?php endif; ?>
                     </div>
-                    <div class="max-h-[60vh] sm:max-h-80 overflow-y-auto px-2">
+                    <div id="notifListContainer" class="max-h-[65vh] sm:max-h-84 overflow-y-auto px-2 space-y-1.5">
                         <?php if (empty($data['notifications'])) : ?>
-                            <div class="px-4 py-8 text-center">
-                                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic transition-colors">Tidak ada tugas mendekati deadline.</p>
+                            <div class="px-4 py-8 text-center" id="emptyNotifState">
+                                <i class="fa-solid fa-bell-slash text-2xl text-gray-300 dark:text-gray-600 mb-2 block"></i>
+                                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic">Tidak ada notifikasi baru.</p>
                             </div>
                         <?php else : ?>
                             <?php foreach ($data['notifications'] as $notif) : 
-                                $isVeryNear = $notif['days_left'] <= 1;
-                                $borderColor = $isVeryNear ? 'border-red-500' : 'border-orange-400';
-                                $bgColor = $isVeryNear ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-orange-50/50 dark:bg-orange-900/10';
-                                $textColor = $isVeryNear ? 'text-red-700 dark:text-red-400' : 'text-orange-700 dark:text-orange-400';
+                                $type = $notif['type'] ?? 'deadline';
+                                if ($type === 'new_project') {
+                                    $borderColor = 'border-indigo-500';
+                                    $bgColor = 'bg-indigo-50/70 dark:bg-indigo-950/20';
+                                    $textColor = 'text-indigo-700 dark:text-indigo-400';
+                                    $icon = '<i class="fa-solid fa-rocket text-indigo-500 text-xs"></i>';
+                                    $badge = 'PROJECT BARU';
+                                    $badgeClass = 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300';
+                                } elseif ($type === 'new_task') {
+                                    $borderColor = 'border-sky-500';
+                                    $bgColor = 'bg-sky-50/70 dark:bg-sky-950/20';
+                                    $textColor = 'text-sky-700 dark:text-sky-400';
+                                    $icon = '<i class="fa-solid fa-list-check text-sky-500 text-xs"></i>';
+                                    $badge = 'TASK BARU';
+                                    $badgeClass = 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300';
+                                } elseif ($type === 'new_comment') {
+                                    $borderColor = 'border-emerald-500';
+                                    $bgColor = 'bg-emerald-50/70 dark:bg-emerald-950/20';
+                                    $textColor = 'text-emerald-700 dark:text-emerald-400';
+                                    $icon = '<i class="fa-solid fa-comment-dots text-emerald-500 text-xs"></i>';
+                                    $badge = 'KOMENTAR';
+                                    $badgeClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
+                                } elseif ($type === 'new_subtask') {
+                                    $borderColor = 'border-purple-500';
+                                    $bgColor = 'bg-purple-50/70 dark:bg-purple-950/20';
+                                    $textColor = 'text-purple-700 dark:text-purple-400';
+                                    $icon = '<i class="fa-solid fa-square-check text-purple-500 text-xs"></i>';
+                                    $badge = 'SUB-TUGAS';
+                                    $badgeClass = 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300';
+                                } else {
+                                    $isVeryNear = isset($notif['days_left']) ? ($notif['days_left'] <= 1) : (strpos($notif['message'] ?? '', 'hari ini') !== false || strpos($notif['message'] ?? '', '1 hari') !== false);
+                                    $borderColor = $isVeryNear ? 'border-rose-500' : 'border-amber-500';
+                                    $bgColor = $isVeryNear ? 'bg-rose-50/70 dark:bg-rose-950/20' : 'bg-amber-50/70 dark:bg-amber-950/20';
+                                    $textColor = $isVeryNear ? 'text-rose-700 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400';
+                                    $icon = '<i class="fa-solid fa-clock ' . ($isVeryNear ? 'text-rose-500' : 'text-amber-500') . ' text-xs"></i>';
+                                    $badge = 'DEADLINE';
+                                    $badgeClass = $isVeryNear ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
+                                }
+                                $link = $notif['link'] ?? (BASEURL . '/task?project_id=' . ($notif['project_id'] ?? ''));
                             ?>
-                                <a href="<?= BASEURL ?>/task?project_id=<?= $notif['project_id'] ?>" class="block px-4 py-4 hover:bg-white dark:hover:bg-slate-700 transition border-l-[6px] <?= $borderColor ?> <?= $bgColor ?> mb-2 rounded-xl transition-all hover:scale-[1.02] shadow-sm">
-                                    <p class="text-xs font-black <?= $textColor ?> mb-1 truncate"><?= $notif['title'] ?></p>
-                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold opacity-80 uppercase tracking-tight">Deadline dalam <?= $notif['days_left'] ?> hari (<?= $notif['project_name'] ?>)</p>
+                                <a href="<?= $link ?>" class="block px-3.5 py-3 hover:bg-gray-100/80 dark:hover:bg-slate-700/60 transition border-l-[4px] <?= $borderColor ?> <?= $bgColor ?> rounded-2xl shadow-xs">
+                                    <div class="flex items-center justify-between gap-2 mb-1">
+                                        <div class="flex items-center gap-1.5">
+                                            <?= $icon ?>
+                                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded <?= $badgeClass ?>"><?= $badge ?></span>
+                                        </div>
+                                        <?php if (!empty($notif['time_ago'])) : ?>
+                                            <span class="text-[10px] text-gray-400 font-bold"><?= $notif['time_ago'] ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <p class="text-xs font-black <?= $textColor ?> mb-0.5 truncate"><?= htmlspecialchars($notif['title']) ?></p>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium line-clamp-2 leading-tight"><?= htmlspecialchars($notif['message'] ?? '') ?></p>
                                 </a>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="px-6 py-4 border-t border-gray-50 dark:border-slate-700 mt-2">
-                        <a href="<?= BASEURL ?>/task" class="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-2">
-                            Lihat Semua Tugas
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg>
+                    <div class="px-5 py-3 border-t border-gray-100 dark:border-slate-700/80 mt-2">
+                        <a href="<?= BASEURL ?>/task" class="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-between">
+                            <span>Buka Semua Task</span>
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
@@ -76,20 +131,26 @@
                 
                 <div class="dropdown-menu absolute top-full right-0 mt-2 w-48 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl shadow-xl py-2 hidden z-50">
                     <a href="<?= BASEURL; ?>/settings" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <i class="fa-solid fa-gear text-sm text-gray-400 w-4 text-center"></i>
                         <span>Pengaturan</span>
                     </a>
+                    <?php if(isset($_SESSION['user']) && (int)$_SESSION['user']['id'] === 1) : ?>
+                    <a href="<?= BASEURL; ?>/danger" class="flex items-center gap-3 px-4 py-2 text-sm text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition font-bold">
+                        <i class="fa-solid fa-triangle-exclamation text-sm text-rose-500 w-4 text-center"></i>
+                        <span>Danger Area</span>
+                    </a>
+                    <?php endif; ?>
                     <!-- Mobile Dark Mode Toggle -->
                     <button onclick="toggleDarkMode()" class="w-full flex sm:hidden items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
                         <div class="relative w-4 h-4 flex items-center justify-center">
-                            <svg class="w-4 h-4 text-gray-400 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                            <svg class="w-4 h-4 text-gray-400 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                            <i class="fa-solid fa-moon text-sm text-gray-400 block dark:hidden"></i>
+                            <i class="fa-solid fa-sun text-sm text-gray-400 hidden dark:block"></i>
                         </div>
                         <span class="flex-grow text-left">Mode <span class="dark:hidden">Gelap</span><span class="hidden dark:inline">Terang</span></span>
                     </button>
                     <hr class="border-gray-50 dark:border-slate-700 my-1">
                     <a href="<?= BASEURL; ?>/login/logout" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition font-bold">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-6 0v-1m6-10V7a3 3 0 00-6 0v1"></path></svg>
+                        <i class="fa-solid fa-right-from-bracket text-sm w-4 text-center"></i>
                         <span>Keluar</span>
                     </a>
                 </div>

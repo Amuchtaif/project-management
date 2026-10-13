@@ -1,11 +1,21 @@
-<?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
 <div id="project-action-content" class="hidden">
-    <button class="w-full lg:w-auto bg-[#4f46e5] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none btnTambahProyek">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-        Buat Proyek Baru
-    </button>
+    <div class="flex flex-wrap items-center gap-2.5">
+        <a href="<?= BASEURL; ?>/project/exportCsv" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black flex items-center gap-2 shadow-sm transition" title="Unduh CSV / Excel">
+            <i class="fa-solid fa-file-excel text-sm"></i>
+            <span>Ekspor CSV</span>
+        </a>
+        <a href="<?= BASEURL; ?>/project/reportPrint" target="_blank" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl text-xs font-black flex items-center gap-2 shadow-sm transition" title="Cetak Laporan Resmi">
+            <i class="fa-solid fa-print text-sm"></i>
+            <span>Cetak Laporan</span>
+        </a>
+        <?php if(isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin') : ?>
+        <button class="bg-[#4f46e5] text-white px-5 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none text-xs btnTambahProyek">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Buat Project Baru</span>
+        </button>
+        <?php endif; ?>
+    </div>
 </div>
-<?php endif; ?>
 
 <div class="bg-white dark:bg-slate-800 rounded-[2rem] border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden p-6 scale-95 md:scale-100 transition-colors">
     <!-- Filters & Flash (Keep existing structure) -->
@@ -14,7 +24,7 @@
             <div class="relative custom-dropdown" id="projectStatusDropdown">
                 <button onclick="toggleDropdown('projectStatusDropdown')" class="bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer tracking-tight flex items-center gap-2 transition-colors">
                     <?= isset($_GET['status']) ? $_GET['status'] : 'Semua Status' ?>
-                    <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <i class="fa-solid fa-chevron-down text-xs text-gray-400 dark:text-gray-500"></i>
                 </button>
                 <div class="dropdown-menu absolute top-full left-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl shadow-xl py-2 hidden z-50">
                     <button onclick="applyFilter('status', '')" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">Semua Status</button>
@@ -25,10 +35,10 @@
             </div>
 
             <div class="relative">
-                <input type="text" id="projectSearch" placeholder="Cari proyek..." value="<?= $_GET['search'] ?? '' ?>" 
+                <input type="text" id="projectSearch" placeholder="Cari project..." value="<?= $_GET['search'] ?? '' ?>" 
                     class="bg-gray-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none pr-10 transition-colors"
                     onkeypress="if(event.key === 'Enter') applyFilter('search', this.value)">
-                <svg class="w-4 h-4 text-gray-400 dark:text-gray-500 absolute right-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <i class="fa-solid fa-magnifying-glass text-gray-400 dark:text-gray-500 absolute right-3.5 top-1/2 -translate-y-1/2 text-sm pointer-events-none"></i>
             </div>
             
             <?php if(isset($_GET['status']) || isset($_GET['search'])) : ?>
@@ -48,7 +58,7 @@
         <table class="w-full text-left min-w-[800px]">
             <thead>
                 <tr class="text-[11px] font-extrabold text-[#9ca3af] dark:text-gray-500 uppercase tracking-[0.2em] border-b border-gray-50 dark:border-slate-700 transition-colors">
-                    <th class="pb-6 pl-2">Nama Proyek</th>
+                    <th class="pb-6 pl-2">Nama Project</th>
                     <th class="pb-6">Klien</th>
                     <th class="pb-6">Tenggat Waktu</th>
                     <th class="pb-6">Status</th>
@@ -61,21 +71,21 @@
             </thead>
             <tbody class="divide-y divide-gray-50/50 dark:divide-slate-700/50 transition-colors">
                 <?php if(empty($data['projects'])) : ?>
-                    <tr><td colspan="6" class="py-20 text-center text-gray-400 font-medium">Belum ada proyek ditambahkan.</td></tr>
+                    <tr><td colspan="6" class="py-20 text-center text-gray-400 font-medium">Belum ada project ditambahkan.</td></tr>
                 <?php endif; ?>
                 <?php foreach($data['projects'] as $p) : ?>
-                <tr class="group hover:bg-gray-50/50 dark:hover:bg-slate-900/30 transition-colors">
+                <tr class="project-row group hover:bg-gray-50/50 dark:hover:bg-slate-900/30 transition-colors">
                     <td class="py-6 pl-2">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 <?= $p['status_color']; ?> rounded-2xl flex items-center justify-center bg-opacity-10 shadow-sm border border-gray-100/50 dark:border-slate-700/50">
                                 <?php if($p['icon'] == 'rocket') : ?>
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    <i class="fa-solid fa-rocket text-xl"></i>
                                 <?php elseif($p['icon'] == 'bank') : ?>
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                                    <i class="fa-solid fa-building-columns text-xl"></i>
                                 <?php elseif($p['icon'] == 'leaf') : ?>
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                    <i class="fa-solid fa-leaf text-xl"></i>
                                 <?php else : ?>
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                                    <i class="fa-solid fa-code text-xl"></i>
                                 <?php endif; ?>
                             </div>
                             <div>
@@ -148,10 +158,10 @@
                     <td class="py-6 text-right pr-4">
                         <div class="flex items-center justify-end gap-5">
                             <button class="p-2 text-[#9ca3af] dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900 btnEditProyek" data-id="<?= $p['id']; ?>">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                <i class="fa-solid fa-pen-to-square text-sm"></i>
                             </button>
                             <button class="p-2 text-[#9ca3af] dark:text-gray-500 hover:text-red-500 transition rounded-lg hover:bg-gray-50 dark:hover:bg-slate-900" onclick="showDeleteModal('<?= BASEURL; ?>/project/delete/<?= $p['id']; ?>', '<?= addslashes($p['name']); ?>')">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                <i class="fa-solid fa-trash-can text-sm"></i>
                             </button>
                         </div>
                     </td>
@@ -163,12 +173,27 @@
     </div>
 
     <!-- Pagination Footer -->
-    <div class="flex items-center justify-between mt-8">
-        <p class="text-[13px] text-[#9ca3af] font-medium">Menampilkan <?= count($data['projects']); ?> proyek</p>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-slate-700/80 transition-colors" id="projectPaginationWrapper">
+        <div class="flex flex-wrap items-center gap-3 text-[13px] text-gray-500 dark:text-gray-400 font-medium">
+            <span id="projectPaginationInfo">Menampilkan <?= count($data['projects']); ?> project</span>
+            <div class="flex items-center gap-2 pl-3 border-l border-gray-200 dark:border-slate-700">
+                <span class="text-xs text-gray-400 dark:text-gray-500 font-bold">Baris per halaman:</span>
+                <select id="projectPageSize" class="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-2.5 py-1 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="all">Semua</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1.5" id="projectPaginationControls">
+            <!-- Dynamically populated buttons -->
+        </div>
     </div>
 </div>
 
-<!-- Modal Form Proyek -->
+<!-- Modal Form Project -->
 <div id="projectModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-900 bg-opacity-40 backdrop-blur-sm modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleProjectModal()"></div>
@@ -179,24 +204,24 @@
                 <div class="p-8 md:p-10">
                     <div class="flex justify-between items-center mb-8">
                         <div>
-                            <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight transition-colors" id="modalTitle">Tambah Proyek</h3>
-                            <p class="text-gray-400 dark:text-gray-500 text-sm font-bold mt-1 transition-colors">Lengkapi informasi detail proyek di bawah ini.</p>
+                            <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight transition-colors" id="modalTitle">Tambah Project</h3>
+                            <p class="text-gray-400 dark:text-gray-500 text-sm font-bold mt-1 transition-colors">Lengkapi informasi detail project di bawah ini.</p>
                         </div>
                         <button type="button" onclick="toggleProjectModal()" class="text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                            <i class="fa-solid fa-xmark text-2xl"></i>
                         </button>
                     </div>
 
                     <div class="space-y-6">
                         <div>
-                            <label for="name" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Nama Proyek</label>
-                            <input type="text" name="name" id="name" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Website Redesign 2024">
+                            <label for="name" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Nama Project</label>
+                            <input type="text" name="name" id="name" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="masukkan nama project">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="client" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Klien</label>
-                                <input type="text" name="client" id="client" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Nama Perusahaan">
+                                <input type="text" name="client" id="client" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="masukan klien">
                             </div>
                             <div>
                                 <label for="due_date" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Tenggat Waktu</label>
@@ -210,7 +235,7 @@
                                 <div class="select-container" id="statusSelectContainer">
                                     <div class="select-trigger">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Status...</span>
-                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
                                     </div>
                                     <div class="select-options">
                                         <div class="select-option" data-value="Sesuai Jadwal">Sesuai Jadwal</div>
@@ -225,7 +250,7 @@
                                 <div class="select-container" id="iconSelectContainer">
                                     <div class="select-trigger">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Ikon...</span>
-                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
                                     </div>
                                     <div class="select-options">
                                         <div class="select-option" data-value="rocket">🚀 Roket</div>
@@ -239,37 +264,85 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Project Leader (Single Select with Search) -->
                             <div>
                                 <label for="leader_id" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Project Leader</label>
                                 <div class="select-container" id="leaderSelectContainer">
-                                    <div class="select-trigger">
+                                    <div class="select-trigger" data-placeholder="Pilih Leader...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Leader...</span>
-                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
                                     </div>
                                     <div class="select-options">
-                                        <?php foreach($data['team'] as $m) : ?>
-                                            <div class="select-option" data-value="<?= $m['id']; ?>"><?= $m['name']; ?></div>
-                                        <?php endforeach; ?>
+                                        <!-- Search Box Header -->
+                                        <div class="p-2.5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-20">
+                                            <div class="relative">
+                                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                                <input type="text" class="select-search-input w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-xs font-bold text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Cari nama leader...">
+                                            </div>
+                                        </div>
+                                        <div class="select-options-list">
+                                            <?php foreach($data['team'] as $m) : ?>
+                                                <div class="select-option flex items-center justify-between gap-3" data-value="<?= $m['id']; ?>" data-name="<?= htmlspecialchars($m['name'], ENT_QUOTES); ?>">
+                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($m['name']); ?>&background=random" class="w-6 h-6 rounded-full border border-gray-200 dark:border-slate-700 flex-shrink-0" alt="Avatar">
+                                                        <div class="flex flex-col min-w-0">
+                                                            <span class="font-bold text-xs truncate leading-tight text-gray-800 dark:text-gray-200"><?= htmlspecialchars($m['name']); ?></span>
+                                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?= htmlspecialchars($m['role_label'] ?? $m['role'] ?? ''); ?></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <div class="select-no-results py-4 text-center text-xs text-gray-400 font-medium" style="display: none;">Tidak ada leader yang cocok</div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="leader_id" id="leader_id">
                             </div>
+
+                            <!-- Anggota Tim Lainnya (Multi-Select with Search) -->
                             <div>
-                                <label for="member_ids" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 transition-colors">Anggota Tim Lainnya</label>
+                                <div class="flex items-center justify-between mb-2 ml-1">
+                                    <label for="member_ids" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest transition-colors">Anggota Tim Lainnya</label>
+                                    <span class="select-count-badge text-[10px] font-bold text-indigo-600 dark:text-indigo-400" style="display: none;">0 dipilih</span>
+                                </div>
                                 <div class="select-container" id="memberSelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Anggota...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Anggota...</span>
-                                        <svg class="select-trigger-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
                                     </div>
                                     <div class="select-options">
-                                        <?php foreach($data['team'] as $m) : ?>
-                                            <div class="select-option flex justify-between items-center" data-value="<?= $m['id']; ?>">
-                                                <span><?= $m['name']; ?></span>
-                                                <div class="check-icon opacity-0 bg-indigo-600 text-white rounded-md p-0.5">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                                </div>
+                                        <!-- Search Box & Quick Actions Header -->
+                                        <div class="p-2.5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-20 space-y-2">
+                                            <div class="relative">
+                                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                                <input type="text" class="select-search-input w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-xs font-bold text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Cari nama anggota...">
                                             </div>
-                                        <?php endforeach; ?>
+                                            <div class="flex items-center justify-between text-[11px] px-1 font-bold">
+                                                <button type="button" class="select-all-btn text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+                                                    <i class="fa-solid fa-check-double text-[10px]"></i> Pilih Semua
+                                                </button>
+                                                <button type="button" class="select-clear-btn text-gray-400 hover:text-rose-500 hover:underline flex items-center gap-1">
+                                                    <i class="fa-solid fa-rotate-left text-[10px]"></i> Hapus Pilihan
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="select-options-list">
+                                            <?php foreach($data['team'] as $m) : ?>
+                                                <div class="select-option flex justify-between items-center gap-3" data-value="<?= $m['id']; ?>" data-name="<?= htmlspecialchars($m['name'], ENT_QUOTES); ?>">
+                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($m['name']); ?>&background=random" class="w-6 h-6 rounded-full border border-gray-200 dark:border-slate-700 flex-shrink-0" alt="Avatar">
+                                                        <div class="flex flex-col min-w-0">
+                                                            <span class="font-bold text-xs truncate leading-tight text-gray-800 dark:text-gray-200"><?= htmlspecialchars($m['name']); ?></span>
+                                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?= htmlspecialchars($m['role_label'] ?? $m['role'] ?? ''); ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="check-icon opacity-0 bg-indigo-600 text-white rounded-md p-0.5 flex-shrink-0 transition-opacity">
+                                                        <i class="fa-solid fa-check text-[10px] w-3 h-3 flex items-center justify-center"></i>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <div class="select-no-results py-4 text-center text-xs text-gray-400 font-medium" style="display: none;">Tidak ada anggota yang cocok</div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="member_ids" id="member_ids">
@@ -301,7 +374,7 @@
 
                     <div class="flex gap-4 mt-10">
                         <button type="button" onclick="toggleProjectModal()" class="flex-1 px-8 py-4 rounded-2xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-black text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-slate-600 transition transition-colors">Batal</button>
-                        <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none">Simpan Proyek</button>
+                        <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none">Simpan Project</button>
                     </div>
                 </div>
             </form>
@@ -334,12 +407,14 @@
 
     // Modal behavior handled via jQuery if available, or native JS
     document.addEventListener('DOMContentLoaded', function() {
-        // Teleport button to header
+        // Teleport action buttons to header
         const actionArea = document.getElementById('header-action-area');
         const actionContent = document.getElementById('project-action-content');
         if (actionArea && actionContent) {
-            const btn = actionContent.querySelector('button');
-            actionArea.appendChild(btn);
+            actionArea.innerHTML = '';
+            while (actionContent.firstChild) {
+                actionArea.appendChild(actionContent.firstChild);
+            }
         }
 
         function syncMemberExclusion() {
@@ -353,8 +428,9 @@
             // Hide leader from member options
             memberOptions.forEach(opt => {
                 const val = opt.getAttribute('data-value');
-                if (val === leaderId) {
-                    opt.classList.add('hidden');
+                if (val && val === leaderId) {
+                    opt.classList.add('excluded-member', 'hidden');
+                    opt.style.display = 'none';
                     // If this leader was also in members, unselect it
                     if (opt.classList.contains('selected')) {
                         opt.classList.remove('selected');
@@ -368,7 +444,8 @@
                         } catch(e) {}
                     }
                 } else {
-                    opt.classList.remove('hidden');
+                    opt.classList.remove('excluded-member', 'hidden');
+                    opt.style.display = '';
                 }
             });
         }
@@ -387,7 +464,7 @@
         const btnsTambah = document.querySelectorAll('.btnTambahProyek');
         btnsTambah.forEach(btn => {
             btn.addEventListener('click', function() {
-                modalTitle.innerText = 'Tambah Proyek Baru';
+                modalTitle.innerText = 'Tambah Project Baru';
                 projectForm.setAttribute('action', '<?= BASEURL; ?>/project/add');
                 
                 document.getElementById('status').value = 'Sesuai Jadwal';
@@ -408,7 +485,7 @@
         btnsEdit.forEach(btn => {
             btn.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
-                modalTitle.innerText = 'Ubah Detail Proyek';
+                modalTitle.innerText = 'Ubah Detail Project';
                 projectForm.setAttribute('action', '<?= BASEURL; ?>/project/edit');
                 
                 fetch('<?= BASEURL; ?>/project/getEdit/' + id)
@@ -440,5 +517,97 @@
                     });
             });
         });
+
+        // Initialize Project Table Pagination
+        initProjectPagination();
     });
+
+    function initProjectPagination() {
+        const rows = Array.from(document.querySelectorAll('.project-row'));
+        const pageSizeSelect = document.getElementById('projectPageSize');
+        const infoEl = document.getElementById('projectPaginationInfo');
+        const controlsEl = document.getElementById('projectPaginationControls');
+        
+        let currentPage = 1;
+        let pageSize = parseInt(pageSizeSelect.value) || 10;
+        const total = rows.length;
+
+        function render() {
+            const effectivePageSize = (pageSizeSelect.value === 'all') ? (total || 1) : pageSize;
+            const totalPages = Math.max(1, Math.ceil(total / effectivePageSize));
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * effectivePageSize;
+            const endIndex = (pageSizeSelect.value === 'all') ? total : Math.min(startIndex + effectivePageSize, total);
+
+            rows.forEach((r, idx) => {
+                if (pageSizeSelect.value === 'all' || (idx >= startIndex && idx < endIndex)) {
+                    r.classList.remove('hidden');
+                } else {
+                    r.classList.add('hidden');
+                }
+            });
+
+            if (total === 0) {
+                infoEl.innerText = 'Menampilkan 0 project';
+            } else if (pageSizeSelect.value === 'all' || total <= effectivePageSize) {
+                infoEl.innerText = `Menampilkan ${total} project`;
+            } else {
+                infoEl.innerText = `Menampilkan ${startIndex + 1} - ${endIndex} dari ${total} project`;
+            }
+
+            controlsEl.innerHTML = '';
+            if (totalPages <= 1 && total <= effectivePageSize) {
+                return;
+            }
+
+            // Prev Button
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = `px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${currentPage === 1 ? 'border-gray-100 dark:border-slate-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-60' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-2xs'}`;
+            prevBtn.disabled = (currentPage === 1);
+            prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left text-[10px]"></i> <span class="hidden sm:inline">Sebelumnya</span>';
+            prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; render(); } };
+            controlsEl.appendChild(prevBtn);
+
+            // Page numbers
+            for (let p = 1; p <= totalPages; p++) {
+                if (totalPages > 6 && Math.abs(p - currentPage) > 2 && p !== 1 && p !== totalPages) {
+                    if (p === 2 || p === totalPages - 1) {
+                        const dots = document.createElement('span');
+                        dots.className = 'px-1 text-xs text-gray-400 font-bold';
+                        dots.innerText = '...';
+                        controlsEl.appendChild(dots);
+                    }
+                    continue;
+                }
+
+                const pageBtn = document.createElement('button');
+                pageBtn.type = 'button';
+                pageBtn.className = `min-w-[32px] h-8 px-2 rounded-xl text-xs font-black transition ${p === currentPage ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200 dark:shadow-none' : 'border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'}`;
+                pageBtn.innerText = p;
+                pageBtn.onclick = () => { currentPage = p; render(); };
+                controlsEl.appendChild(pageBtn);
+            }
+
+            // Next Button
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = `px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 ${currentPage === totalPages ? 'border-gray-100 dark:border-slate-800 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-60' : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 shadow-2xs'}`;
+            nextBtn.disabled = (currentPage === totalPages);
+            nextBtn.innerHTML = '<span class="hidden sm:inline">Selanjutnya</span> <i class="fa-solid fa-chevron-right text-[10px]"></i>';
+            nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; render(); } };
+            controlsEl.appendChild(nextBtn);
+        }
+
+        pageSizeSelect.addEventListener('change', function() {
+            pageSize = (this.value === 'all') ? total : parseInt(this.value);
+            currentPage = 1;
+            render();
+        });
+
+        render();
+    }
 </script>

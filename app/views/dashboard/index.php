@@ -2,18 +2,18 @@
     <!-- Stats Cards -->
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-purple-100 dark:bg-purple-900/30 p-2.5 sm:p-3 rounded-2xl">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path></svg>
+            <div class="bg-purple-100 dark:bg-purple-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-folder text-xl sm:text-2xl text-purple-600 dark:text-purple-400"></i>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Total Proyek' : 'Proyek Saya'; ?></p>
+        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Total Project' : 'Project Saya'; ?></p>
         <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight transition-colors"><?= $data['stats']['projects']; ?></h3>
     </div>
 
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-blue-100 dark:bg-blue-900/30 p-2.5 sm:p-3 rounded-2xl">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            <div class="bg-blue-100 dark:bg-blue-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-list-check text-xl sm:text-2xl text-blue-600 dark:text-blue-400"></i>
             </div>
         </div>
         <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Tugas Aktif' : 'Tugas Saya'; ?></p>
@@ -22,8 +22,8 @@
 
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-indigo-100 dark:bg-indigo-900/30 p-2.5 sm:p-3 rounded-2xl">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="bg-indigo-100 dark:bg-indigo-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-circle-check text-xl sm:text-2xl text-indigo-600 dark:text-indigo-400"></i>
             </div>
         </div>
         <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Tugas Selesai</p>
@@ -33,8 +33,8 @@
     <?php if(($data['user_role'] ?? 'admin') === 'admin') : ?>
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-gray-100 dark:bg-gray-700 p-2.5 sm:p-3 rounded-2xl">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <div class="bg-gray-100 dark:bg-gray-700 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-users text-xl sm:text-2xl text-gray-600 dark:text-gray-300"></i>
             </div>
         </div>
         <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Anggota Tim</p>
@@ -43,8 +43,8 @@
     <?php else : ?>
     <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
         <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-emerald-100 dark:bg-emerald-900/30 p-2.5 sm:p-3 rounded-2xl">
-                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <div class="bg-emerald-100 dark:bg-emerald-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-user-shield text-xl sm:text-2xl text-emerald-600 dark:text-emerald-400"></i>
             </div>
         </div>
         <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Role Anda</p>
@@ -59,13 +59,13 @@
         <!-- Left Column: Project Progress -->
         <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Progres Proyek' : 'Proyek Saya'; ?></h2>
+                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Progres Project' : 'Project Saya'; ?></h2>
                 <a href="<?= BASEURL; ?>/project" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:underline">Lihat Semua</a>
             </div>
             
             <div class="space-y-8">
                 <?php if(empty($data['projects_progress'])) : ?>
-                    <p class="text-gray-400 text-sm italic"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Belum ada proyek aktif.' : 'Anda belum ditugaskan ke proyek manapun.'; ?></p>
+                    <p class="text-gray-400 text-sm italic"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Belum ada project aktif.' : 'Anda belum ditugaskan ke project manapun.'; ?></p>
                 <?php endif; ?>
                 <?php foreach(array_slice($data['projects_progress'], 0, 3) as $p) : 
                     $progress = (int)round($p['avg_progress']);
@@ -133,7 +133,7 @@
                 <div class="group flex items-center justify-between p-4 rounded-2xl border border-gray-50 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all duration-300">
                     <div class="flex items-center gap-4 flex-grow min-w-0">
                         <div class="hidden sm:flex w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <i class="fa-solid fa-clock text-base"></i>
                         </div>
                         <div class="truncate">
                             <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate"><?= $task['title']; ?></h4>
@@ -241,30 +241,30 @@
             <?php foreach(array_slice($data['activities'], 0, 6) as $activity) : 
                 // Icon & Color Logic based on action
                 $iconColor = "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
-                $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>';
+                $svgIcon = '<i class="fa-solid fa-comment-dots text-xs"></i>';
                 
                 $action = strtolower($activity['action']);
                 if (strpos($action, 'menambah') !== false || strpos($action, 'membuat') !== false) {
                     $iconColor = "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
-                    $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>';
+                    $svgIcon = '<i class="fa-solid fa-plus text-xs"></i>';
                     if (strpos($action, 'tugas') !== false) {
-                        $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>';
+                        $svgIcon = '<i class="fa-solid fa-file-circle-plus text-xs"></i>';
                     }
                 } elseif (strpos($action, 'perbarui') !== false || strpos($action, 'edit') !== false || strpos($action, 'ubah') !== false) {
                     $iconColor = "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400";
-                    $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>';
+                    $svgIcon = '<i class="fa-solid fa-pen text-xs"></i>';
                 } elseif (strpos($action, 'hapus') !== false) {
                     $iconColor = "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
-                    $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>';
+                    $svgIcon = '<i class="fa-solid fa-trash-can text-xs"></i>';
                 } elseif (strpos($action, 'anggota') !== false) {
                     $iconColor = "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400";
-                    $svgIcon = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>';
+                    $svgIcon = '<i class="fa-solid fa-user-plus text-xs"></i>';
                 }
             ?>
             <div class="relative pl-10 md:pl-12">
                 <!-- Timeline Icon -->
                 <div class="absolute left-0 top-0 w-8 md:w-10 h-8 md:h-10 <?= $iconColor ?> rounded-full border-4 border-white dark:border-slate-800 flex items-center justify-center z-10 shadow-sm transition-colors">
-                    <div class="scale-90 md:scale-100"><?= $svgIcon ?></div>
+                    <div class="scale-90 md:scale-100 flex items-center justify-center"><?= $svgIcon ?></div>
                 </div>
                 
                 <div class="flex-grow min-w-0">
@@ -289,3 +289,16 @@
         </div>
     </div>
 </div>
+
+<!-- Dashboard Footer -->
+<footer class="mt-12 pt-6 pb-4 border-t border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 dark:text-gray-500">
+    <div class="flex items-center gap-1.5 font-medium">
+        <span>Created with</span>
+        <i class="fa-solid fa-heart text-rose-500 text-xs inline-block animate-pulse"></i>
+        <span>by</span>
+        <span class="font-bold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Code With Andi</span>
+    </div>
+    <div class="text-[11px] text-gray-400 dark:text-gray-500">
+        &copy; <?= date('Y'); ?> Manajemen Project Yayasan Assunnah. All rights reserved.
+    </div>
+</footer>

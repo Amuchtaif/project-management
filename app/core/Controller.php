@@ -15,6 +15,12 @@ class Controller {
             header('Location: ' . BASEURL . '/login');
             exit;
         }
+
+        // Heartbeat: Update database activity every 5 minutes internally
+        if (!isset($_SESSION['DB_LAST_UPDATE']) || (time() - $_SESSION['DB_LAST_UPDATE'] > 300)) {
+            $this->model('User_model')->updateLastActive($_SESSION['user']['id']);
+            $_SESSION['DB_LAST_UPDATE'] = time();
+        }
     }
 
     public function view($view, $data = []) {
