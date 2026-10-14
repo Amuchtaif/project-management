@@ -252,13 +252,14 @@ class Project extends Controller {
         fputcsv($output, ['ID', 'Nama Proyek', 'Klien', 'Tenggat Waktu', 'Status', 'Progres (%)', 'Project Leader', 'Total Tugas Selesai', 'Total Tugas']);
 
         foreach ($projects as $p) {
+            $progress = (int)round($p['avg_progress'] ?? ($p['progress'] ?? 0));
             fputcsv($output, [
                 $p['id'],
                 $p['name'],
                 $p['client'],
                 $p['due_date'],
                 $p['status'],
-                $p['progress'] . '%',
+                $progress . '%',
                 $p['leader_name'] ?? 'Belum ditentukan',
                 $p['completed_tasks'] ?? 0,
                 $p['total_tasks'] ?? 0

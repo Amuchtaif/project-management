@@ -68,7 +68,9 @@ class Project_model {
     public function getProjectsByRole($role, $userId, $filters = []) {
         $query = "SELECT DISTINCT p.*, u.name as leader_name,
                   (SELECT GROUP_CONCAT(u2.name) FROM project_members pm2 JOIN users u2 ON pm2.user_id = u2.id WHERE pm2.project_id = p.id AND pm2.role_in_project = 'member') as member_names,
-                  (SELECT COALESCE(AVG(progress), 0) FROM tasks WHERE project_id = p.id) as avg_progress 
+                  (SELECT COALESCE(AVG(progress), 0) FROM tasks WHERE project_id = p.id) as avg_progress,
+                  (SELECT COUNT(*) FROM tasks WHERE project_id = p.id AND status = 'Selesai') as completed_tasks,
+                  (SELECT COUNT(*) FROM tasks WHERE project_id = p.id) as total_tasks
                   FROM projects p
                   LEFT JOIN project_members pm ON p.id = pm.project_id AND pm.role_in_project = 'leader'
                   LEFT JOIN users u ON pm.user_id = u.id";
