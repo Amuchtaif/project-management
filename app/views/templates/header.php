@@ -40,7 +40,7 @@
             opacity: 1;
         }
 
-        /* Professional Custom Dropdown (Matching Image) */
+        /* Professional Custom Dropdown (Compact Enterprise Style) */
         .select-container {
             position: relative;
             width: 100%;
@@ -51,30 +51,40 @@
             justify-content: space-between;
             width: 100%;
             background-color: #fff;
-            border: 1.5px solid #e5e7eb;
-            padding: 1rem 1.25rem;
-            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            padding: 0.625rem 0.875rem;
+            min-height: 38px;
+            height: 38px;
+            border-radius: 0.75rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             user-select: none;
+            box-sizing: border-box;
         }
         .select-trigger:hover {
-            border-color: #d1d5db;
+            border-color: #cbd5e1;
         }
         .select-trigger.active {
             border-color: #4f46e5;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
         }
         .select-trigger-text {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #374151;
+            color: #1e293b;
+            line-height: 1.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .select-trigger-icon {
-            width: 1rem;
-            height: 1rem;
-            color: #9ca3af;
+            width: 0.75rem;
+            height: 0.75rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
             transition: transform 0.2s ease;
+            flex-shrink: 0;
+            margin-left: 0.5rem;
         }
         .select-trigger.active .select-trigger-icon {
             transform: rotate(180deg);
@@ -82,20 +92,20 @@
         }
         .select-options {
             position: absolute;
-            top: calc(100% + 0.5rem);
+            top: calc(100% + 0.375rem);
             left: 0;
             right: 0;
             background-color: #fff;
-            border: 1px solid #f3f4f6;
-            border-radius: 1.25rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
             z-index: 150;
             max-height: 15rem;
             overflow-y: auto;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(6px);
+            transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .select-trigger.active + .select-options {
             opacity: 1;
@@ -103,21 +113,23 @@
             transform: translateY(0);
         }
         .select-option {
-            padding: 0.875rem 1.25rem;
-            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
             font-weight: 500;
-            color: #4b5563;
+            color: #334155;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
+            border-radius: 0.5rem;
+            margin: 2px 4px;
         }
         .select-option:hover {
-            background-color: #f9fafb;
-            color: #111827;
+            background-color: #f1f5f9;
+            color: #0f172a;
         }
         .select-option.selected {
-            background-color: #f5f3ff;
+            background-color: #eef2ff;
             color: #4f46e5;
-            font-weight: 700;
+            font-weight: 600;
         }
         .select-option.selected .check-icon {
             opacity: 1;
@@ -140,18 +152,18 @@
         /* Premium Range Slider */
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             background: #4f46e5;
-            border: 4px solid #fff;
+            border: 2px solid #fff;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
             transition: all 0.2s ease;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.4);
+            transform: scale(1.15);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.35);
         }
         input[type="range"]:active::-webkit-slider-thumb {
             transform: scale(0.95);
@@ -160,13 +172,13 @@
         /* Dark Mode Specific Overrides for non-Tailwind elements */
         .dark body { background-color: #0f172a; }
         .dark .sidebar-active { background-color: #1e293b; color: #818cf8; }
-        .dark .select-trigger { background-color: #0f172a; border-color: #334155; color: #e5e7eb; }
-        .dark .select-trigger-text { color: #e5e7eb !important; }
+        .dark .select-trigger { background-color: #0f172a; border-color: #334155; color: #f1f5f9; }
+        .dark .select-trigger-text { color: #f1f5f9 !important; }
         .dark .select-trigger-text.text-gray-400 { color: #64748b !important; } /* slate-500 placeholder */
-        .dark .select-options { background-color: #0f172a; border-color: #334155; }
+        .dark .select-options { background-color: #0f172a; border-color: #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
         .dark .select-option { color: #cbd5e1; } /* slate-300 */
         .dark .select-option:hover { background-color: #1e293b; color: #fff; }
-        .dark .select-option.selected { background-color: #1e293b; color: #818cf8; border-left: 3px solid #6366f1; }
+        .dark .select-option.selected { background-color: rgba(79, 70, 229, 0.2); color: #818cf8; border-left: 3px solid #6366f1; }
         .dark input[type="range"]::-webkit-slider-thumb { border-color: #1e293b; }
     </style>
     <script>

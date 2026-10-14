@@ -481,43 +481,52 @@
 <!-- Modal Form Tugas -->
 <div id="taskModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900 bg-opacity-40 backdrop-blur-sm modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleTaskModal()"></div>
+        <div class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleTaskModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-2xl text-left shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-xl sm:w-full transition-colors">
+        <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-2xl text-left shadow-2xl transform modal-content sm:my-8 sm:align-middle sm:max-w-xl sm:w-full transition-colors border border-gray-100 dark:border-slate-700">
             <form action="<?= BASEURL; ?>/task/add" method="post" id="taskForm">
                 <input type="hidden" name="id" id="task_id">
                 <input type="hidden" name="current_project_filter" value="<?= $_GET['project_id'] ?? '' ?>">
-                <div class="p-8 md:p-10">
-                    <div class="flex justify-between items-center mb-8">
-                        <div>
-                            <h3 class="text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight transition-colors" id="taskModalTitle">Buat Tugas Baru</h3>
-                            <p class="text-gray-400 dark:text-gray-500 text-sm font-bold mt-1 transition-colors">Delegasikan pekerjaan ke tim Anda dengan detail jelas.</p>
+
+                <div class="p-6 md:p-7">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700/80 mb-5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-sm flex-shrink-0">
+                                <i class="fa-solid fa-list-check"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100 tracking-tight" id="taskModalTitle">Buat Tugas Baru</h3>
+                                <p class="text-gray-400 dark:text-gray-500 text-xs">Delegasikan pekerjaan ke tim Anda dengan detail jelas.</p>
+                            </div>
                         </div>
-                        <button type="button" onclick="toggleTaskModal()" class="text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition">
-                            <i class="fa-solid fa-xmark text-2xl"></i>
+                        <button type="button" onclick="toggleTaskModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 flex items-center justify-center transition">
+                            <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-4">
+                        <!-- Judul Tugas -->
                         <div>
-                            <label for="title" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Judul Tugas</label>
-                            <input type="text" name="title" id="title" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Slicing Homepage">
+                            <label for="title" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Judul Tugas</label>
+                            <input type="text" name="title" id="title" required class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition h-[38px] placeholder-gray-400 dark:placeholder-gray-500" placeholder="Contoh: Slicing Homepage">
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Project & Assignee -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="project_id" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Pilih Project</label>
+                                <label for="project_id" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Pilih Project</label>
                                 <div class="select-container" id="projectSelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Project...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Project...</span>
-                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon"></i>
                                     </div>
                                     <div class="select-options">
                                         <!-- Search Box Header -->
-                                        <div class="p-2.5 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-20">
+                                        <div class="p-2 border-b border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-20">
                                             <div class="relative">
                                                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
-                                                <input type="text" class="select-search-input w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-2 text-xs font-bold text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Cari nama project atau lead...">
+                                                <input type="text" class="select-search-input w-full bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs font-semibold text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cari nama project atau lead...">
                                             </div>
                                         </div>
                                         <div class="select-options-list">
@@ -526,15 +535,14 @@
                                                      data-value="<?= $p['id']; ?>" 
                                                      data-name="<?= htmlspecialchars($p['name'], ENT_QUOTES); ?>"
                                                      data-search="<?= htmlspecialchars(strtolower($p['name'] . ' ' . ($p['leader_name'] ?? '')), ENT_QUOTES); ?>">
-                                                    <div class="flex items-center gap-3 min-w-0">
-                                                        <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
-                                                            <i class="fa-solid fa-folder text-xs"></i>
+                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                        <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 text-xs">
+                                                            <i class="fa-solid fa-folder"></i>
                                                         </div>
                                                         <div class="flex flex-col min-w-0">
                                                             <span class="font-bold text-xs truncate leading-tight text-gray-800 dark:text-gray-200"><?= htmlspecialchars($p['name']); ?></span>
-                                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center gap-1 mt-0.5 truncate">
-                                                                <i class="fa-solid fa-user-tie text-[9px] text-indigo-500"></i>
-                                                                <span>Lead: <strong class="text-gray-600 dark:text-gray-300 font-semibold"><?= htmlspecialchars($p['leader_name'] ?? 'Belum ditentukan'); ?></strong></span>
+                                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                                                                Lead: <?= htmlspecialchars($p['leader_name'] ?? '-'); ?>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -547,17 +555,23 @@
                                 </div>
                                 <input type="hidden" name="project_id" id="project_id_field">
                             </div>
+
                             <?php if($_SESSION['user']['role'] === 'admin') : ?>
                             <div>
-                                <label for="assignee_id" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Penanggung Jawab</label>
+                                <label for="assignee_id" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Penanggung Jawab</label>
                                 <div class="select-container" id="assigneeSelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Anggota...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Anggota...</span>
-                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon"></i>
                                     </div>
                                     <div class="select-options">
                                         <?php foreach($data['team'] as $m) : ?>
-                                            <div class="select-option" data-value="<?= $m['id']; ?>"><?= $m['name']; ?></div>
+                                            <div class="select-option flex items-center gap-2" data-value="<?= $m['id']; ?>">
+                                                <div class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                                                    <?= strtoupper(substr($m['name'], 0, 2)); ?>
+                                                </div>
+                                                <span class="truncate"><?= htmlspecialchars($m['name']); ?></span>
+                                            </div>
                                         <?php endforeach; ?>
                                     </div>
                                 </div>
@@ -565,67 +579,89 @@
                             </div>
                             <?php else : ?>
                             <div class="flex flex-col justify-end">
-                                <label class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Penanggung Jawab</label>
-                                <div class="bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-500 dark:text-gray-400 flex items-center gap-3">
-                                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name']); ?>&background=random" class="w-6 h-6 rounded-full border border-gray-100 dark:border-slate-700">
-                                    <span><?= $_SESSION['user']['name']; ?> (Anda)</span>
+                                <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Penanggung Jawab</label>
+                                <div class="bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-600 dark:text-gray-300 flex items-center gap-2 h-[38px]">
+                                    <div class="w-5 h-5 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-[9px] font-bold">
+                                        <?= strtoupper(substr($_SESSION['user']['name'], 0, 2)); ?>
+                                    </div>
+                                    <span><?= htmlspecialchars($_SESSION['user']['name']); ?> (Anda)</span>
                                 </div>
                                 <input type="hidden" name="assignee_id" id="assignee_id_field" value="<?= $_SESSION['user']['id']; ?>">
                             </div>
                             <?php endif; ?>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Tag & Priority -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="tag" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Label / Tag</label>
-                                <input type="text" name="tag" id="tag" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition" placeholder="Contoh: Design">
+                                <label for="tag" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Label / Tag</label>
+                                <input type="text" name="tag" id="tag" required class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition h-[38px] placeholder-gray-400 dark:placeholder-gray-500" placeholder="Contoh: Design">
                             </div>
                             <div>
-                                <label for="priority_field" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Prioritas</label>
+                                <label for="priority_field" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Prioritas</label>
                                 <div class="select-container" id="prioritySelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Prioritas...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Prioritas...</span>
-                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon"></i>
                                     </div>
                                     <div class="select-options">
-                                        <div class="select-option" data-value="tinggi">Tinggi</div>
-                                        <div class="select-option" data-value="sedang">Sedang</div>
-                                        <div class="select-option" data-value="biasa">Biasa</div>
+                                        <div class="select-option flex items-center gap-2" data-value="tinggi">
+                                            <span class="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0"></span>
+                                            <span>Tinggi</span>
+                                        </div>
+                                        <div class="select-option flex items-center gap-2" data-value="sedang">
+                                            <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                            <span>Sedang</span>
+                                        </div>
+                                        <div class="select-option flex items-center gap-2" data-value="biasa">
+                                            <span class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></span>
+                                            <span>Biasa</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="priority" id="priority_field" value="biasa">
                             </div>
                         </div>
 
+                        <!-- Due Date -->
                         <div>
-                            <label for="due_date" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Tenggat Waktu</label>
-                            <input type="date" name="due_date" id="due_date" required class="w-full bg-white dark:bg-slate-900 border-[1.5px] border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-4 text-sm font-bold text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 outline-none transition cursor-pointer" onclick="this.showPicker()">
+                            <label for="due_date" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Tenggat Waktu</label>
+                            <input type="date" name="due_date" id="due_date" required class="w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-800 dark:text-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition cursor-pointer h-[38px]" onclick="this.showPicker()">
                         </div>
 
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Status & Progress -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="status_field" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1">Status KanBan</label>
+                                <label for="status_field" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5">Status KanBan</label>
                                 <div class="select-container" id="statusSelectContainer">
                                     <div class="select-trigger" data-placeholder="Pilih Status...">
                                         <span class="select-trigger-text text-gray-400 dark:text-gray-500">Pilih Status...</span>
-                                        <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
+                                        <i class="fa-solid fa-chevron-down select-trigger-icon"></i>
                                     </div>
                                     <div class="select-options">
-                                        <div class="select-option" data-value="todo">To Do</div>
-                                        <div class="select-option" data-value="in_progress">In Progress</div>
-                                        <div class="select-option" data-value="done">Done</div>
+                                        <div class="select-option flex items-center gap-2" data-value="todo">
+                                            <span class="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0"></span>
+                                            <span>To Do</span>
+                                        </div>
+                                        <div class="select-option flex items-center gap-2" data-value="in_progress">
+                                            <span class="w-2 h-2 rounded-full bg-indigo-500 flex-shrink-0"></span>
+                                            <span>In Progress</span>
+                                        </div>
+                                        <div class="select-option flex items-center gap-2" data-value="done">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                            <span>Done</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <input type="hidden" name="status" id="status_field" value="todo">
                             </div>
                             <div id="progress-container">
-                                <label for="progress" class="block text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2 ml-1 flex justify-between">
-                                    Progress (%)
-                                    <span id="progress-val-text" class="text-indigo-600 dark:text-indigo-400 font-black">0%</span>
+                                <label for="progress" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5 ml-0.5 flex justify-between items-center">
+                                    <span>Progress</span>
+                                    <span id="progress-val-text" class="text-xs font-bold text-indigo-600 dark:text-indigo-400">0%</span>
                                 </label>
-                                <div class="relative py-2 px-1">
-                                    <input type="range" name="progress" id="progress" min="0" max="100" class="w-full h-2 bg-gray-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600 transition-all hover:bg-gray-200 dark:hover:bg-slate-600" value="0">
+                                <div class="h-[38px] flex items-center px-1">
+                                    <input type="range" name="progress" id="progress" min="0" max="100" class="w-full h-1.5 bg-gray-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600 transition hover:bg-gray-200 dark:hover:bg-slate-600" value="0">
                                 </div>
                             </div>
                         </div>
@@ -633,9 +669,13 @@
                         <input type="hidden" name="tag_color" id="tag_color" value="bg-blue-50 text-blue-600">
                     </div>
 
-                    <div class="flex gap-4 mt-10">
-                        <button type="button" onclick="toggleTaskModal()" class="flex-1 px-8 py-4 rounded-2xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-black text-sm uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-slate-600 transition">Batal</button>
-                        <button type="submit" class="flex-1 px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-none">Simpan Tugas</button>
+                    <!-- Modal Actions Footer -->
+                    <div class="flex items-center justify-end gap-2.5 mt-6 pt-4 border-t border-gray-100 dark:border-slate-700/80">
+                        <button type="button" onclick="toggleTaskModal()" class="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 font-semibold text-xs hover:bg-gray-50 dark:hover:bg-slate-700 transition">Batal</button>
+                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 dark:shadow-none flex items-center gap-1.5">
+                            <i class="fa-solid fa-check text-xs"></i>
+                            <span>Simpan Tugas</span>
+                        </button>
                     </div>
                 </div>
             </form>
@@ -1098,23 +1138,13 @@
         function updateProgressVisibility() {
             const val = parseInt(progressSlider.value);
             
-            // Slider Color
-            progressSlider.classList.remove('accent-red-500', 'accent-yellow-400', 'accent-green-500');
-            if (val >= 71) progressSlider.classList.add('accent-green-500');
-            else if (val >= 41) progressSlider.classList.add('accent-yellow-400');
-            else progressSlider.classList.add('accent-red-500');
-
-            // Text color & sync
+            // Text sync
             progressText.innerText = val + '%';
-            progressText.className = 'font-black';
-            if (val >= 71) progressText.classList.add('text-green-500');
-            else if (val >= 41) progressText.classList.add('text-yellow-400');
-            else progressText.classList.add('text-red-500');
+            progressText.className = 'text-xs font-bold text-indigo-600 dark:text-indigo-400';
 
             // Auto-sync status from progress visibility
             if (statusField.value === 'done') {
                 progressContainer.classList.add('hidden');
-                // Don't override slider value here if we're just syncing UI
             } else {
                 progressContainer.classList.remove('hidden');
             }

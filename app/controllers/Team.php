@@ -227,5 +227,66 @@ class Team extends Controller {
         header('Location: ' . BASEURL . '/team');
         exit;
     }
-}
 
+    public function exportPdf() {
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses ke halaman ini', 'danger');
+            header('Location: ' . BASEURL . '/dashboard');
+            exit;
+        }
+
+        $data['judul'] = 'Laporan Data Anggota Tim & Hak Akses - Yayasan Assunnah';
+        $data['team'] = $this->model('Team_model')->getAllTeam();
+        $data['generated_by'] = $_SESSION['user']['name'];
+        $data['generated_at'] = date('d M Y, H:i');
+
+        $this->view('team/report_print', $data);
+    }
+
+    public function exportCsv() {
+        $this->auth();
+
+        if($_SESSION['user']['role'] !== 'admin') {
+            Flasher::setFlash('gagal', 'Anda tidak memiliki akses', 'danger');
+            header('Location: ' . BASEURL . '/dashboard');
+            exit;
+        }
+
+        $team = $this->model('Team_model')->getAllTeam();
+        $filename = 'laporan_tim_' . date('Y-m-d_H-i') . '.csv';
+
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+        // UTF-8 BOM
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        fputcsv($output, ['No', 'Nama Profil', 'Email', 'Jabatan / Profesi', 'Hak Akses Sistem', 'Departemen', 'Status']);
+
+        $no = 1;
+        foreach ($team as $m) {
+            $hakAkses = ($m['role'] === 'admin') ? 'Akses Penuh (Admin)' : 'Akses Terbatas (Member)';
+            fputcsv($output, [
+                $no++,
+                $m['name'],
+                $m['email'],
+                $m['role_label'] ?? $m['role'],
+                $hakAkses,
+                $m['department'] ?? '-',
+                $m['status'] ?? 'AKTIF'
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+}

@@ -1,297 +1,437 @@
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
-    <!-- Stats Cards -->
-    <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-purple-100 dark:bg-purple-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-folder text-xl sm:text-2xl text-purple-600 dark:text-purple-400"></i>
+<?php
+// Compute task distribution counts & percentages
+$dist = ['todo' => 0, 'in_progress' => 0, 'done' => 0];
+$totalTasks = 0;
+foreach (($data['task_distribution'] ?? []) as $d) {
+    $st = $d['status'] ?? 'todo';
+    $cnt = (int)($d['count'] ?? 0);
+    $dist[$st] = $cnt;
+    $totalTasks += $cnt;
+}
+$doneCount = $dist['done'];
+$inProgressCount = $dist['in_progress'];
+$todoCount = $dist['todo'];
+
+$pArr = [
+    'todo' => $totalTasks > 0 ? round(($todoCount / $totalTasks) * 100) : 0,
+    'in_progress' => $totalTasks > 0 ? round(($inProgressCount / $totalTasks) * 100) : 0,
+    'done' => $totalTasks > 0 ? round(($doneCount / $totalTasks) * 100) : 0
+];
+
+if (!function_exists('dashboardTimeAgo')) {
+    function dashboardTimeAgo($timestamp) {
+        if (!$timestamp) return "-";
+        $time = is_numeric($timestamp) ? $timestamp : strtotime($timestamp);
+        $diff = time() - $time;
+        if ($diff < 60) return "Baru saja";
+        if ($diff < 3600) return floor($diff / 60) . " menit lalu";
+        if ($diff < 86400) return floor($diff / 3600) . " jam lalu";
+        if ($diff < 172800) return "Kemarin";
+        if ($diff < 604800) return floor($diff / 86400) . " hari lalu";
+        return date('d M Y', $time);
+    }
+}
+?>
+
+<!-- Header Actions Teleport Content -->
+<div id="dashboard-action-content" class="hidden">
+    <div class="flex items-center gap-2.5">
+        <a href="<?= BASEURL; ?>/task/calendar" class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-200 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center gap-2 shadow-2xs">
+            <i class="fa-solid fa-calendar-days text-indigo-600 dark:text-indigo-400"></i>
+            <span>Kalender</span>
+        </a>
+        <a href="<?= BASEURL; ?>/task" class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-200 px-3.5 py-2 rounded-xl text-xs font-semibold hover:bg-gray-50 dark:hover:bg-slate-700 transition flex items-center gap-2 shadow-2xs">
+            <i class="fa-solid fa-table-columns text-indigo-600 dark:text-indigo-400"></i>
+            <span>Papan Tugas</span>
+        </a>
+        <?php if(($data['user_role'] ?? 'admin') === 'admin') : ?>
+        <a href="<?= BASEURL; ?>/project" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2 shadow-sm shadow-indigo-200 dark:shadow-none">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Buat Project</span>
+        </a>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Metric Stats Strip (4 Cards) -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mb-6">
+    <!-- Card 1: Total Project -->
+    <div class="relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-4 shadow-2xs hover:border-indigo-200 dark:hover:border-slate-600 transition-all duration-300 group">
+        <!-- Background Overlay Icon -->
+        <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-5xl sm:text-6xl text-indigo-600/10 dark:text-indigo-400/15 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 pointer-events-none select-none">
+            <i class="fa-solid fa-diagram-project"></i>
+        </div>
+        <div class="relative z-10">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Total Project' : 'Project Saya'; ?></span>
+            <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100"><?= $data['stats']['projects']; ?></span>
+                <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500">project aktif</span>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Total Project' : 'Project Saya'; ?></p>
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight transition-colors"><?= $data['stats']['projects']; ?></h3>
     </div>
 
-    <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-blue-100 dark:bg-blue-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-list-check text-xl sm:text-2xl text-blue-600 dark:text-blue-400"></i>
+    <!-- Card 2: Tugas Aktif / Tugas Saya -->
+    <div class="relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-4 shadow-2xs hover:border-sky-200 dark:hover:border-slate-600 transition-all duration-300 group">
+        <!-- Background Overlay Icon -->
+        <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-5xl sm:text-6xl text-sky-600/10 dark:text-sky-400/15 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 pointer-events-none select-none">
+            <i class="fa-solid fa-list-check"></i>
+        </div>
+        <div class="relative z-10">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Tugas Aktif' : 'Tugas Saya'; ?></span>
+            <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100"><?= $data['stats']['tasks']; ?></span>
+                <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500">tugas tercatat</span>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Tugas Aktif' : 'Tugas Saya'; ?></p>
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight transition-colors"><?= $data['stats']['tasks']; ?></h3>
     </div>
 
-    <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-indigo-100 dark:bg-indigo-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-circle-check text-xl sm:text-2xl text-indigo-600 dark:text-indigo-400"></i>
+    <!-- Card 3: Tugas Selesai -->
+    <div class="relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-4 shadow-2xs hover:border-emerald-200 dark:hover:border-slate-600 transition-all duration-300 group">
+        <!-- Background Overlay Icon -->
+        <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-5xl sm:text-6xl text-emerald-600/10 dark:text-emerald-400/15 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 pointer-events-none select-none">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="relative z-10">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block">Tugas Selesai</span>
+            <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400"><?= $doneCount; ?></span>
+                <span class="text-[11px] font-medium text-emerald-600/70 dark:text-emerald-400/70"><?= $totalTasks > 0 ? round(($doneCount / $totalTasks) * 100) . '%' : '0%'; ?> selesai</span>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Tugas Selesai</p>
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight transition-colors"><?= number_format($data['stats']['tasks'] * 0.8, 0); ?></h3>
     </div>
 
+    <!-- Card 4: Anggota Tim (Admin) atau Hak Akses (Member) -->
     <?php if(($data['user_role'] ?? 'admin') === 'admin') : ?>
-    <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-gray-100 dark:bg-gray-700 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-users text-xl sm:text-2xl text-gray-600 dark:text-gray-300"></i>
+    <div class="relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-4 shadow-2xs hover:border-purple-200 dark:hover:border-slate-600 transition-all duration-300 group">
+        <!-- Background Overlay Icon -->
+        <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-5xl sm:text-6xl text-purple-600/10 dark:text-purple-400/15 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 pointer-events-none select-none">
+            <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="relative z-10">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block">Anggota Tim</span>
+            <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100"><?= $data['stats']['members']; ?></span>
+                <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500">anggota aktif</span>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Anggota Tim</p>
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight transition-colors"><?= $data['stats']['members']; ?></h3>
     </div>
     <?php else : ?>
-    <div class="bg-white dark:bg-slate-800 p-4 sm:p-6 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition flex flex-col items-center sm:items-start text-center sm:text-left">
-        <div class="flex items-center justify-between mb-3 sm:mb-4">
-            <div class="bg-emerald-100 dark:bg-emerald-900/30 p-2.5 sm:p-3 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-user-shield text-xl sm:text-2xl text-emerald-600 dark:text-emerald-400"></i>
+    <div class="relative overflow-hidden bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-4 shadow-2xs hover:border-amber-200 dark:hover:border-slate-600 transition-all duration-300 group">
+        <!-- Background Overlay Icon -->
+        <div class="absolute right-3.5 top-1/2 -translate-y-1/2 text-5xl sm:text-6xl text-amber-600/10 dark:text-amber-400/15 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 pointer-events-none select-none">
+            <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div class="relative z-10">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block">Hak Akses</span>
+            <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 capitalize"><?= htmlspecialchars($_SESSION['user']['role']); ?></span>
+                <span class="text-[11px] font-medium text-gray-400 dark:text-gray-500">level pengguna</span>
             </div>
         </div>
-        <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Role Anda</p>
-        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 capitalize tracking-tight transition-colors"><?= $_SESSION['user']['role']; ?></h3>
     </div>
     <?php endif; ?>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Left Column: Project Progress -->
-    <div class="lg:col-span-2 space-y-8">
-        <!-- Left Column: Project Progress -->
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Progres Project' : 'Project Saya'; ?></h2>
-                <a href="<?= BASEURL; ?>/project" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:underline">Lihat Semua</a>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <!-- Left Column: Project Progress & Compact Sub-Grid (2 cols) -->
+    <div class="lg:col-span-2 space-y-6">
+        <!-- Progres Project Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-5 md:p-6 shadow-2xs transition-colors">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700/80 mb-5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-bars-progress"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Progres Project Aktif' : 'Progres Project Saya'; ?></h2>
+                    </div>
+                </div>
+                <a href="<?= BASEURL; ?>/project" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 transition">
+                    <span>Lihat Semua</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </a>
             </div>
-            
-            <div class="space-y-8">
+
+            <div class="space-y-3.5">
                 <?php if(empty($data['projects_progress'])) : ?>
-                    <p class="text-gray-400 text-sm italic"><?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Belum ada project aktif.' : 'Anda belum ditugaskan ke project manapun.'; ?></p>
-                <?php endif; ?>
-                <?php foreach(array_slice($data['projects_progress'], 0, 3) as $p) : 
-                    $progress = (int)round($p['avg_progress']);
-                    
-                    // Dynamic Colors
-                    $pColor = 'bg-red-500';
-                    $borderCol = 'border-red-500';
-                    $textCol = 'text-red-500';
-                    
-                    if ($progress >= 71) {
-                        $pColor = 'bg-green-500';
-                        $borderCol = 'border-green-500';
-                        $textCol = 'text-green-500';
-                    } elseif ($progress >= 41) {
-                        $pColor = 'bg-yellow-400';
-                        $borderCol = 'border-yellow-400';
-                        $textCol = 'text-yellow-400';
-                    }
-                ?>
-                <div class="group/proj">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-3">
-                           <div class="w-2 h-2 rounded-full <?= $pColor ?>"></div>
-                           <span class="font-bold text-gray-800 dark:text-gray-200 transition-colors group-hover/proj:text-indigo-600"><?= $p['name']; ?></span>
-                        </div>
-                        <span class="<?= $textCol ?> text-sm font-black"><?= $progress; ?>%</span>
+                    <div class="py-8 text-center text-gray-400 dark:text-gray-500 text-xs italic">
+                        <i class="fa-solid fa-folder-open text-2xl mb-2 block text-gray-300 dark:text-gray-600"></i>
+                        <?= ($data['user_role'] ?? 'admin') === 'admin' ? 'Belum ada project aktif.' : 'Anda belum ditugaskan ke project manapun.'; ?>
                     </div>
-                    
-                    <div class="relative w-full bg-gray-50 dark:bg-slate-700 h-1 sm:h-1.5 rounded-full mb-4">
-                        <div class="h-full rounded-full <?= $pColor ?> transition-all duration-700" style="width: <?= $progress; ?>%"></div>
-                        <!-- Slider Look decoration -->
-                        <div class="absolute top-1/2 -translate-y-1/2 w-2.5 sm:w-3.5 h-2.5 sm:h-3.5 bg-white dark:bg-slate-900 border-2 <?= $borderCol ?> rounded-full shadow-sm shadow-black/10 transition-all duration-700 pointer-events-none" style="left: calc(<?= $progress; ?>% - 5px)"></div>
-                    </div>
+                <?php else : ?>
+                    <?php foreach(array_slice($data['projects_progress'], 0, 3) as $p) : 
+                        $progress = (int)round($p['avg_progress'] ?? 0);
+                        $statusText = $p['status'] ?? 'Sesuai Jadwal';
+                        $stLower = strtolower(trim($statusText));
 
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-gray-400 dark:text-gray-500">Project Lead: <span class="font-bold text-gray-600 dark:text-gray-300"><?= $p['leader_name'] ?? 'Belum ada'; ?></span></span>
-                        <div class="flex -space-x-2">
-                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($p['leader_name'] ?? 'User'); ?>&background=random" class="w-6 h-6 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" title="<?= $p['leader_name'] ?? 'User'; ?>">
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        
-        <!-- Near Deadline Tasks Section -->
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">Tugas Deadline Dekat</h2>
-                <a href="<?= BASEURL; ?>/task" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:underline">Lihat Semua</a>
-            </div>
+                        // Status Badge
+                        $badgeClass = 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/60';
+                        if ($stLower === 'terhambat') {
+                            $badgeClass = 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border-rose-200/60 dark:border-rose-800/60';
+                        } elseif ($stLower === 'selesai' || $progress === 100) {
+                            $badgeClass = 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border-blue-200/60 dark:border-blue-800/60';
+                        }
 
-            <div class="space-y-4">
-                <?php if(empty($data['near_deadline_tasks'])) : ?>
-                    <p class="text-gray-400 text-sm italic">Tidak ada tugas dengan deadline dekat.</p>
+                        // Bar Color
+                        $barColor = 'bg-indigo-600';
+                        if ($progress === 100) $barColor = 'bg-emerald-500';
+                        elseif ($stLower === 'terhambat') $barColor = 'bg-rose-500';
+                    ?>
+                    <div class="p-3.5 rounded-xl border border-gray-100 dark:border-slate-700/60 bg-gray-50/50 dark:bg-slate-900/30 hover:border-gray-200 dark:hover:border-slate-700 transition">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 text-xs">
+                                    <i class="fa-solid fa-folder"></i>
+                                </div>
+                                <a href="<?= BASEURL; ?>/task?project_id=<?= $p['id']; ?>" class="text-xs font-bold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400 truncate transition">
+                                    <?= htmlspecialchars($p['name']); ?>
+                                </a>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-semibold border <?= $badgeClass ?> flex-shrink-0">
+                                    <?= htmlspecialchars($statusText); ?>
+                                </span>
+                            </div>
+                            <span class="text-xs font-bold text-gray-900 dark:text-gray-100 flex-shrink-0"><?= $progress; ?>%</span>
+                        </div>
+
+                        <!-- Progress Bar Track -->
+                        <div class="w-full bg-gray-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden mb-2.5">
+                            <div class="h-full rounded-full <?= $barColor ?> transition-all duration-500" style="width: <?= $progress; ?>%"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+                            <span class="flex items-center gap-1.5">
+                                <span>Lead:</span>
+                                <strong class="text-gray-700 dark:text-gray-300 font-semibold"><?= htmlspecialchars($p['leader_name'] ?? 'Belum ada'); ?></strong>
+                            </span>
+                            <a href="<?= BASEURL; ?>/task?project_id=<?= $p['id']; ?>" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline flex items-center gap-1">
+                                <span>Buka Tugas</span>
+                                <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
                 <?php endif; ?>
-                <?php foreach($data['near_deadline_tasks'] as $task) : 
-                    $daysLeft = $task['days_left'];
-                    $badgeColor = 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-400';
-                    if($daysLeft < 0) $badgeColor = 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400';
-                    elseif($daysLeft == 0) $badgeColor = 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400';
-                    elseif($daysLeft <= 3) $badgeColor = 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400';
-                    elseif($daysLeft <= 7) $badgeColor = 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400';
-                ?>
-                <div class="group flex items-center justify-between p-4 rounded-2xl border border-gray-50 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-all duration-300">
-                    <div class="flex items-center gap-4 flex-grow min-w-0">
-                        <div class="hidden sm:flex w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-clock text-base"></i>
-                        </div>
-                        <div class="truncate">
-                            <h4 class="text-sm font-bold text-gray-800 dark:text-gray-200 truncate"><?= $task['title']; ?></h4>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
-                                <span class="truncate"><?= $task['project_name']; ?></span>
-                                <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                                <span class="truncate italic"><?= ($task['assignee_id'] == $_SESSION['user']['id'] ? 'Ditugaskan ke Anda' : 'Oleh ' . ($task['assignee_name'] ?? 'TBA')); ?></span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="text-right flex-shrink-0 ml-4">
-                        <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider <?= $badgeColor ?>">
-                            <?= $daysLeft < 0 ? abs($daysLeft) . ' Hari Terlewat' : ($daysLeft == 0 ? 'Hari Ini' : $daysLeft . ' Hari Lagi'); ?>
-                        </span>
-                    </div>
-                </div>
-                <?php endforeach; ?>
             </div>
         </div>
 
-        <!-- Task Distribution Chart -->
-        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm transition-colors">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-8">Distribusi Tugas</h2>
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
-                <?php
-                    $dist = ['todo' => 0, 'in_progress' => 0, 'done' => 0];
-                    $total = 0;
-                    foreach($data['task_distribution'] as $d) {
-                        $dist[$d['status']] = $d['count'];
-                        $total += $d['count'];
-                    }
-                    
-                    $pArr = [
-                        'todo' => $total > 0 ? round(($dist['todo'] / $total) * 100) : 0,
-                        'in_progress' => $total > 0 ? round(($dist['in_progress'] / $total) * 100) : 0,
-                        'done' => $total > 0 ? round(($dist['done'] / $total) * 100) : 0
-                    ];
-
-                    // For SVG donut: dasharray values
-                    $offset1 = 100 - $pArr['done'];
-                    $offset2 = $offset1 - $pArr['in_progress'];
-                ?>
-                <div class="relative w-40 h-40">
-                    <svg class="w-full h-full" viewBox="0 0 36 36">
-                        <!-- Background Circle (Todo - Grey) -->
-                        <path class="text-gray-100 dark:text-gray-700 transition-colors" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        
-                        <!-- Done Circle (Green) -->
-                        <path class="text-green-500" stroke-width="3" stroke-dasharray="<?= $pArr['done']; ?>, 100" stroke-dashoffset="0" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        
-                        <!-- In Progress Circle (Indigo) -->
-                        <path class="text-indigo-600" stroke-width="3" stroke-dasharray="<?= $pArr['in_progress']; ?>, 100" stroke-dashoffset="-<?= $pArr['done']; ?>" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                    </svg>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center">
-                        <span class="text-2xl font-bold text-gray-900 dark:text-gray-100 transition-colors"><?= $total; ?></span>
-                        <span class="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-bold">Total</span>
+        <!-- 2-Column Sub-Grid: Near Deadline Tasks & Task Distribution -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Card A: Tugas Deadline Mendatang -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-5 md:p-6 shadow-2xs transition-colors flex flex-col">
+                <div class="flex items-center justify-between pb-3.5 border-b border-gray-100 dark:border-slate-700/80 mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-[11px]">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100">Deadline Dekat</h3>
                     </div>
+                    <a href="<?= BASEURL; ?>/task" class="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700">Lihat Semua</a>
                 </div>
-                <div class="space-y-4 w-full md:w-auto">
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium">Selesai (<?= $pArr['done']; ?>%)</span>
+
+                <div class="space-y-2.5 flex-grow">
+                    <?php if(empty($data['near_deadline_tasks'])) : ?>
+                        <div class="py-6 text-center text-gray-400 dark:text-gray-500 text-xs italic">
+                            <i class="fa-solid fa-circle-check text-xl mb-1.5 text-emerald-500 block"></i>
+                            Tidak ada tugas deadline mendesak.
+                        </div>
+                    <?php else : ?>
+                        <?php foreach(array_slice($data['near_deadline_tasks'], 0, 4) as $task) : 
+                            $daysLeft = (int)$task['days_left'];
+                            $prio = strtolower($task['priority'] ?? 'biasa');
+                            
+                            $prioDot = 'bg-blue-500';
+                            if ($prio === 'tinggi') $prioDot = 'bg-rose-500';
+                            elseif ($prio === 'sedang') $prioDot = 'bg-amber-500';
+
+                            if ($daysLeft < 0) {
+                                $badgeClass = 'bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/60';
+                                $badgeText = abs($daysLeft) . ' Hari Terlewat';
+                            } elseif ($daysLeft === 0) {
+                                $badgeClass = 'bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/60';
+                                $badgeText = 'Hari Ini';
+                            } else {
+                                $badgeClass = 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60';
+                                $badgeText = $daysLeft . ' Hari Lagi';
+                            }
+                        ?>
+                        <div class="p-2.5 rounded-lg border border-gray-100 dark:border-slate-700/60 hover:bg-gray-50 dark:hover:bg-slate-700/30 transition flex items-center justify-between gap-2.5">
+                            <div class="min-w-0 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full <?= $prioDot ?> flex-shrink-0" title="Prioritas <?= ucfirst($prio); ?>"></span>
+                                <div class="truncate">
+                                    <h4 class="text-xs font-semibold text-gray-800 dark:text-gray-200 truncate"><?= htmlspecialchars($task['title']); ?></h4>
+                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 truncate"><?= htmlspecialchars($task['project_name']); ?></p>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded flex-shrink-0 <?= $badgeClass ?>">
+                                <?= $badgeText ?>
+                            </span>
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Card B: Distribusi Status Tugas -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-5 md:p-6 shadow-2xs transition-colors flex flex-col">
+                <div class="flex items-center justify-between pb-3.5 border-b border-gray-100 dark:border-slate-700/80 mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[11px]">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <h3 class="text-xs font-bold text-gray-900 dark:text-gray-100">Distribusi Tugas</h3>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 bg-indigo-600 rounded-full"></div>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium">Dalam Proses (<?= $pArr['in_progress']; ?>%)</span>
+                    <a href="<?= BASEURL; ?>/task" class="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700">Papan Tugas</a>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 flex-grow">
+                    <!-- SVG Donut Chart -->
+                    <div class="relative w-28 h-28 flex-shrink-0">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                            <!-- Background Track (Todo) -->
+                            <path class="text-gray-100 dark:text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            
+                            <!-- Done Segment (Green) -->
+                            <path class="text-emerald-500 transition-all duration-700" stroke-width="3.5" stroke-dasharray="<?= $pArr['done']; ?>, 100" stroke-dashoffset="0" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            
+                            <!-- In Progress Segment (Indigo) -->
+                            <path class="text-indigo-600 transition-all duration-700" stroke-width="3.5" stroke-dasharray="<?= $pArr['in_progress']; ?>, 100" stroke-dashoffset="-<?= $pArr['done']; ?>" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                            <span class="text-lg font-bold text-gray-900 dark:text-gray-100 leading-none"><?= $totalTasks; ?></span>
+                            <span class="text-[9px] text-gray-400 dark:text-gray-500 font-medium mt-0.5">Tugas</span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-                        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium">Rencana (<?= $pArr['todo']; ?>%)</span>
+
+                    <!-- Breakdown Legend -->
+                    <div class="space-y-2 w-full text-xs">
+                        <div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/30 transition">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">Selesai</span>
+                            </div>
+                            <span class="font-bold text-gray-900 dark:text-gray-100"><?= $doneCount; ?> <span class="text-[10px] text-gray-400 font-normal">(<?= $pArr['done']; ?>%)</span></span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/30 transition">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-2 h-2 rounded-full bg-indigo-600 flex-shrink-0"></span>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">In Progress</span>
+                            </div>
+                            <span class="font-bold text-gray-900 dark:text-gray-100"><?= $inProgressCount; ?> <span class="text-[10px] text-gray-400 font-normal">(<?= $pArr['in_progress']; ?>%)</span></span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700/30 transition">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-slate-600 flex-shrink-0"></span>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">To Do</span>
+                            </div>
+                            <span class="font-bold text-gray-900 dark:text-gray-100"><?= $todoCount; ?> <span class="text-[10px] text-gray-400 font-normal">(<?= $pArr['todo']; ?>%)</span></span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Column: Recent Activity -->
-    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-col transition-colors">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-xl font-black text-gray-900 dark:text-gray-100">Aktivitas Terbaru</h2>
-            <a href="<?= BASEURL; ?>/activity" class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:underline">Lihat Semua</a>
-        </div>
-        
-        <?php
-        function timeAgo($timestamp) {
-            if (!$timestamp) return "-";
-            $time = is_numeric($timestamp) ? $timestamp : strtotime($timestamp);
-            $now = time();
-            $diff = $now - $time;
-            
-            if ($diff < 60) return "BARU SAJA";
-            if ($diff < 3600) return floor($diff / 60) . " MENIT YANG LALU";
-            if ($diff < 86400) return floor($diff / 3600) . " JAM YANG LALU";
-            if ($diff < 172800) return "KEMARIN";
-            if ($diff < 604800) return floor($diff / 86400) . " HARI YANG LALU";
-            return strtoupper(date('d M Y', $time));
-        }
-        ?>
-
-        <div class="relative space-y-12 flex-grow before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[2px] before:bg-indigo-50/50 dark:before:bg-slate-700/50 transition-colors">
-            <?php if(empty($data['activities'])) : ?>
-                <p class="text-gray-400 text-sm italic">Belum ada aktivitas baru.</p>
-            <?php endif; ?>
-            
-            <?php foreach(array_slice($data['activities'], 0, 6) as $activity) : 
-                // Icon & Color Logic based on action
-                $iconColor = "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400";
-                $svgIcon = '<i class="fa-solid fa-comment-dots text-xs"></i>';
-                
-                $action = strtolower($activity['action']);
-                if (strpos($action, 'menambah') !== false || strpos($action, 'membuat') !== false) {
-                    $iconColor = "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400";
-                    $svgIcon = '<i class="fa-solid fa-plus text-xs"></i>';
-                    if (strpos($action, 'tugas') !== false) {
-                        $svgIcon = '<i class="fa-solid fa-file-circle-plus text-xs"></i>';
-                    }
-                } elseif (strpos($action, 'perbarui') !== false || strpos($action, 'edit') !== false || strpos($action, 'ubah') !== false) {
-                    $iconColor = "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400";
-                    $svgIcon = '<i class="fa-solid fa-pen text-xs"></i>';
-                } elseif (strpos($action, 'hapus') !== false) {
-                    $iconColor = "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400";
-                    $svgIcon = '<i class="fa-solid fa-trash-can text-xs"></i>';
-                } elseif (strpos($action, 'anggota') !== false) {
-                    $iconColor = "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400";
-                    $svgIcon = '<i class="fa-solid fa-user-plus text-xs"></i>';
-                }
-            ?>
-            <div class="relative pl-10 md:pl-12">
-                <!-- Timeline Icon -->
-                <div class="absolute left-0 top-0 w-8 md:w-10 h-8 md:h-10 <?= $iconColor ?> rounded-full border-4 border-white dark:border-slate-800 flex items-center justify-center z-10 shadow-sm transition-colors">
-                    <div class="scale-90 md:scale-100 flex items-center justify-center"><?= $svgIcon ?></div>
+    <!-- Right Column: Recent Activity Feed (1 col) -->
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700/80 p-5 md:p-6 shadow-2xs flex flex-col transition-colors">
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-700/80 mb-5">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
                 </div>
-                
-                <div class="flex-grow min-w-0">
-                   <p class="text-[14px] text-gray-700 dark:text-gray-300 leading-relaxed mb-0.5">
-                       <span class="font-black text-gray-900 dark:text-gray-100"><?= ($activity['user_id'] == $_SESSION['user']['id'] ? 'Anda' : $activity['user_name']); ?></span> 
-                       <span class="text-gray-500 dark:text-gray-400"><?= $activity['action']; ?></span> 
-                       <span class="text-indigo-600 dark:text-indigo-400 font-bold"><?= $activity['target']; ?></span>
-                   </p>
-                   
-                   <?php if(!empty($activity['info']) && $activity['info'] != $activity['target']) : ?>
-                       <p class="text-[13px] text-gray-400 dark:text-gray-500 italic mb-2 leading-relaxed border-l-2 border-gray-100 dark:border-slate-700 pl-3">
-                           "<?= $activity['info']; ?>"
-                       </p>
-                   <?php endif; ?>
-
-                   <span class="text-[10px] font-black tracking-widest text-gray-400 dark:text-gray-600 opacity-80 uppercase">
-                       <?= timeAgo($activity['created_at']); ?>
-                   </span>
-                </div>
+                <h2 class="text-sm font-bold text-gray-900 dark:text-gray-100">Aktivitas Terbaru</h2>
             </div>
-            <?php endforeach; ?>
+            <a href="<?= BASEURL; ?>/activity" class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 flex items-center gap-1 transition">
+                <span>Lihat Semua</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </a>
+        </div>
+
+        <div class="flex-grow flex flex-col justify-between">
+            <?php if(empty($data['activities'])) : ?>
+                <div class="my-auto py-12 text-center text-gray-400 dark:text-gray-500 text-xs italic">
+                    <i class="fa-solid fa-clock-rotate-left text-2xl mb-2 text-gray-300 dark:text-gray-600 block"></i>
+                    Belum ada riwayat aktivitas baru.
+                </div>
+            <?php else : ?>
+                <div class="relative border-l border-gray-100 dark:border-slate-700/80 ml-3.5 space-y-3.5 pl-4 pb-2">
+                    <?php foreach(array_slice($data['activities'], 0, 8) as $activity) : 
+                        $action = strtolower($activity['action']);
+                        
+                        $nodeBg = "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400";
+                        $nodeIcon = '<i class="fa-solid fa-comment-dots"></i>';
+
+                        if (strpos($action, 'menambah') !== false || strpos($action, 'membuat') !== false) {
+                            $nodeBg = "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
+                            $nodeIcon = '<i class="fa-solid fa-plus"></i>';
+                            if (strpos($action, 'tugas') !== false) {
+                                $nodeIcon = '<i class="fa-solid fa-file-circle-plus"></i>';
+                            }
+                        } elseif (strpos($action, 'perbarui') !== false || strpos($action, 'edit') !== false || strpos($action, 'ubah') !== false) {
+                            $nodeBg = "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400";
+                            $nodeIcon = '<i class="fa-solid fa-pen"></i>';
+                        } elseif (strpos($action, 'hapus') !== false) {
+                            $nodeBg = "bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400";
+                            $nodeIcon = '<i class="fa-solid fa-trash-can"></i>';
+                        } elseif (strpos($action, 'anggota') !== false) {
+                            $nodeBg = "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400";
+                            $nodeIcon = '<i class="fa-solid fa-user-plus"></i>';
+                        }
+                        
+                        $isCurrentUser = ($activity['user_id'] == $_SESSION['user']['id']);
+                    ?>
+                    <div class="relative group">
+                        <!-- Node Circle -->
+                        <div class="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center <?= $nodeBg ?> text-[8px] shadow-2xs">
+                            <?= $nodeIcon ?>
+                        </div>
+
+                        <div class="min-w-0">
+                            <p class="text-xs text-gray-700 dark:text-gray-300 leading-snug">
+                                <span class="font-semibold text-gray-900 dark:text-gray-100"><?= $isCurrentUser ? 'Anda' : htmlspecialchars($activity['user_name']); ?></span>
+                                <span class="text-gray-500 dark:text-gray-400"><?= htmlspecialchars($activity['action']); ?></span>
+                                <span class="text-indigo-600 dark:text-indigo-400 font-semibold"><?= htmlspecialchars($activity['target']); ?></span>
+                            </p>
+
+                            <?php if(!empty($activity['info']) && $activity['info'] != $activity['target']) : ?>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-500 italic mt-0.5 border-l-2 border-gray-100 dark:border-slate-700 pl-2 line-clamp-1">
+                                    "<?= htmlspecialchars($activity['info']); ?>"
+                                </p>
+                            <?php endif; ?>
+
+                            <span class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 block font-medium">
+                                <?= dashboardTimeAgo($activity['created_at']); ?>
+                            </span>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <!-- Grounded Footer Bar -->
+                <div class="mt-auto pt-3.5 border-t border-gray-100 dark:border-slate-700/80 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Live Feed
+                        </span>
+                        <span class="text-[11px] text-gray-400 dark:text-gray-500 font-medium">
+                            <?= count($data['activities']); ?> aktivitas
+                        </span>
+                    </div>
+                    <a href="<?= BASEURL; ?>/activity" class="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 transition">
+                        <span>Riwayat Lengkap</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
 <!-- Dashboard Footer -->
-<footer class="mt-12 pt-6 pb-4 border-t border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 dark:text-gray-500">
+<footer class="mt-8 pt-5 pb-4 border-t border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 dark:text-gray-500">
     <div class="flex items-center gap-1.5 font-medium">
         <span>Created with</span>
         <i class="fa-solid fa-heart text-rose-500 text-xs inline-block animate-pulse"></i>
@@ -302,3 +442,17 @@
         &copy; <?= date('Y'); ?> Manajemen Project Yayasan Assunnah. All rights reserved.
     </div>
 </footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Teleport action content to topbar header area
+        const actionArea = document.getElementById('header-action-area');
+        const actionContent = document.getElementById('dashboard-action-content');
+        if (actionArea && actionContent) {
+            actionArea.innerHTML = '';
+            while (actionContent.firstChild) {
+                actionArea.appendChild(actionContent.firstChild);
+            }
+        }
+    });
+</script>

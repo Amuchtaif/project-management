@@ -282,4 +282,8 @@ class Project extends Controller {
 
         $this->view('project/report_print', $data);
     }
+
+    public function exportPdf() {
+        $this->reportPrint();
+    }
 }
