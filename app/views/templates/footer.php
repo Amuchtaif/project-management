@@ -373,6 +373,157 @@
     window.showNotification = showGlobalNotification;
     window.showTeamToast = showGlobalNotification;
 
+    // ================= NOTIFICATION DISMISS & MANAGEMENT =================
+    function animateRemoveNotifCard(card) {
+        if (!card) return;
+        card.style.transition = 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(10px)';
+        card.style.maxHeight = (card.scrollHeight || 64) + 'px';
+        
+        requestAnimationFrame(() => {
+            card.style.maxHeight = '0px';
+            card.style.paddingTop = '0px';
+            card.style.paddingBottom = '0px';
+            card.style.marginTop = '0px';
+            card.style.marginBottom = '0px';
+            card.style.borderWidth = '0px';
+            card.style.pointerEvents = 'none';
+        });
+
+        setTimeout(() => {
+            if (card && card.parentNode) {
+                card.remove();
+            }
+            checkEmptyNotifState();
+        }, 260);
+    }
+
+    function updateNotifCounters() {
+        const container = document.getElementById('notifListContainer');
+        if (!container) return;
+        const visibleItems = container.querySelectorAll('.notif-item:not([style*="opacity: 0"])');
+        const remaining = visibleItems.length;
+        const badgeCount = document.getElementById('notifBadgeCount');
+        const redDot = document.getElementById('notifRedDot');
+        const clearBtn = document.getElementById('btnClearAllNotif');
+
+        if (remaining <= 0) {
+            if (badgeCount) badgeCount.remove();
+            if (redDot) redDot.remove();
+            if (clearBtn) clearBtn.remove();
+        } else {
+            if (badgeCount) {
+                badgeCount.textContent = remaining;
+            }
+        }
+    }
+
+    function checkEmptyNotifState() {
+        const container = document.getElementById('notifListContainer');
+        if (!container) return;
+        const remainingItems = container.querySelectorAll('.notif-item');
+        if (remainingItems.length === 0) {
+            const redDot = document.getElementById('notifRedDot');
+            if (redDot) redDot.remove();
+
+            const badgeCount = document.getElementById('notifBadgeCount');
+            if (badgeCount) badgeCount.remove();
+
+            const clearBtn = document.getElementById('btnClearAllNotif');
+            if (clearBtn) clearBtn.remove();
+
+            container.innerHTML = `
+                <div class="px-6 py-10 text-center" id="emptyNotifState">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-2.5">
+                        <i class="fa-regular fa-bell text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-slate-700 dark:text-slate-300">Tidak ada notifikasi baru</p>
+                    <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Semua notifikasi telah dibaca</p>
+                </div>
+            `;
+        }
+    }
+
+    function dismissSingleNotification(event, notifId, card) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (!card && event) {
+            card = event.currentTarget.closest('.notif-item');
+        }
+
+        if (card) {
+            animateRemoveNotifCard(card);
+        }
+        updateNotifCounters();
+
+        if (notifId) {
+            fetch('<?= BASEURL ?>/notification/dismiss/' + notifId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                keepalive: true
+            }).catch(err => {
+                console.error('Dismiss notification failed:', err);
+            });
+        }
+    }
+
+    async function handleNotificationClick(event, notifId, link) {
+        // If click was triggered on the dismiss close button, do nothing here
+        if (event.target && event.target.closest('.btn-dismiss-single')) {
+            return;
+        }
+
+        const card = event.currentTarget.closest('.notif-item') || event.currentTarget;
+
+        // Support opening in new tab without navigating current window
+        if (event.ctrlKey || event.metaKey || event.shiftKey || event.button === 1) {
+            if (card) animateRemoveNotifCard(card);
+            updateNotifCounters();
+            if (notifId) {
+                fetch('<?= BASEURL ?>/notification/dismiss/' + notifId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    keepalive: true
+                }).catch(() => {});
+            }
+            return;
+        }
+
+        event.preventDefault();
+
+        // Dismiss visually from dropdown immediately
+        if (card) {
+            animateRemoveNotifCard(card);
+        }
+        updateNotifCounters();
+
+        // Send API call to mark as read before navigating
+        if (notifId) {
+            try {
+                const dismissPromise = fetch('<?= BASEURL ?>/notification/dismiss/' + notifId, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    keepalive: true
+                });
+                // Allow up to 200ms for db update, then proceed smoothly
+                await Promise.race([
+                    dismissPromise,
+                    new Promise(resolve => setTimeout(resolve, 200))
+                ]);
+            } catch (err) {
+                console.error('Failed to dismiss notification:', err);
+            }
+        }
+
+        if (link && link !== '#' && !link.startsWith('javascript:')) {
+            window.location.href = link;
+        }
+    }
+
     function clearAllNotifications(event) {
         if (event) {
             event.preventDefault();
@@ -383,46 +534,45 @@
         if (btn) {
             btn.disabled = true;
             btn.classList.add('opacity-50', 'pointer-events-none');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i><span>Membersihkan...</span>';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i><span>Memproses...</span>';
         }
 
-        fetch('<?= BASEURL ?>/task/clearNotifications', {
+        fetch('<?= BASEURL ?>/notification/clearAll', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         })
         .then(res => res.json())
         .then(res => {
             if (res.success) {
-                // Sembunyikan badge dot merah pada ikon bell
                 const redDot = document.getElementById('notifRedDot');
                 if (redDot) redDot.remove();
 
-                // Sembunyikan counter badge
                 const badgeCount = document.getElementById('notifBadgeCount');
                 if (badgeCount) badgeCount.remove();
 
-                // Hapus tombol clear
                 if (btn) btn.remove();
 
-                // Ubah list notifikasi menjadi empty state
                 const container = document.getElementById('notifListContainer');
                 if (container) {
                     container.innerHTML = `
-                        <div class="px-4 py-8 text-center" id="emptyNotifState">
-                            <i class="fa-solid fa-bell-slash text-2xl text-gray-300 dark:text-gray-600 mb-2 block"></i>
-                            <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic">Tidak ada notifikasi baru.</p>
+                        <div class="px-6 py-10 text-center" id="emptyNotifState">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-2.5">
+                                <i class="fa-regular fa-bell text-sm"></i>
+                            </div>
+                            <p class="text-xs font-medium text-slate-700 dark:text-slate-300">Tidak ada notifikasi baru</p>
+                            <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Semua notifikasi telah dibaca</p>
                         </div>
                     `;
                 }
-
-                showGlobalNotification('Semua notifikasi berhasil dibersihkan', '', 'success');
             } else {
                 if (btn) {
                     btn.disabled = false;
                     btn.classList.remove('opacity-50', 'pointer-events-none');
-                    btn.innerHTML = '<i class="fa-solid fa-trash-can text-[10px]"></i><span>Clear Semua</span>';
+                    btn.innerHTML = '<i class="fa-solid fa-check-double text-[11px]"></i><span>Tandai semua dibaca</span>';
                 }
-                showGlobalNotification(res.message || 'Gagal membersihkan notifikasi', '', 'danger');
+                if (typeof showGlobalNotification === 'function') {
+                    showGlobalNotification(res.message || 'Gagal membersihkan notifikasi', '', 'danger');
+                }
             }
         })
         .catch(err => {
@@ -430,11 +580,19 @@
             if (btn) {
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'pointer-events-none');
-                btn.innerHTML = '<i class="fa-solid fa-trash-can text-[10px]"></i><span>Clear Semua</span>';
+                btn.innerHTML = '<i class="fa-solid fa-check-double text-[11px]"></i><span>Tandai semua dibaca</span>';
             }
-            showGlobalNotification('Terjadi kesalahan koneksi server', '', 'danger');
+            if (typeof showGlobalNotification === 'function') {
+                showGlobalNotification('Terjadi kesalahan koneksi server', '', 'danger');
+            }
         });
     }
+
+    window.animateRemoveNotifCard = animateRemoveNotifCard;
+    window.updateNotifCounters = updateNotifCounters;
+    window.checkEmptyNotifState = checkEmptyNotifState;
+    window.dismissSingleNotification = dismissSingleNotification;
+    window.handleNotificationClick = handleNotificationClick;
     window.clearAllNotifications = clearAllNotifications;
 
     window.onload = () => {

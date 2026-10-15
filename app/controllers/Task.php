@@ -617,6 +617,27 @@ class Task extends Controller {
         exit;
     }
 
+    public function dismissNotification($id = null) {
+        $this->auth();
+        header('Content-Type: application/json');
+
+        if (!$id) {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $id = $input['id'] ?? ($_POST['id'] ?? null);
+        }
+
+        if (!$id) {
+            echo json_encode(['success' => false, 'message' => 'ID notifikasi diperlukan']);
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $this->model('Notification_model')->markAsRead((int)$id, $userId);
+
+        echo json_encode(['success' => true, 'message' => 'Notifikasi berhasil ditandai dibaca']);
+        exit;
+    }
+
     // ================= EXPORT CSV =================
     public function exportCsv() {
         $this->auth();

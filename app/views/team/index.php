@@ -343,60 +343,60 @@ ksort($departments);
 <!-- Modal Form Tambah/Ubah Tim -->
 <div id="teamModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-xs modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleTeamModal()"></div>
+        <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md modal-overlay opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);" aria-hidden="true" onclick="toggleTeamModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         
-        <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-2xl text-left shadow-xl border border-gray-100 dark:border-slate-700 transform modal-content sm:my-8 sm:align-middle sm:max-w-lg sm:w-full transition-all">
+        <div class="inline-block align-bottom bg-white dark:bg-slate-900 rounded-2xl text-left shadow-2xl border border-slate-200/80 dark:border-slate-800 transform modal-content sm:my-8 sm:align-middle sm:max-w-lg sm:w-full transition-all">
             <form action="<?= BASEURL; ?>/team/add" method="post" id="teamForm">
                 <input type="hidden" name="id" id="member_id">
-                <div class="p-6 sm:p-7">
+                <div class="p-6">
                     <!-- Modal Header -->
-                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-slate-700">
+                    <div class="flex justify-between items-start mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
                         <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100" id="teamModalTitle">Tambah Anggota Baru</h3>
-                            <p class="text-gray-500 dark:text-gray-400 text-xs mt-0.5">Kelola data profil, jabatan kerja, dan level hak akses sistem.</p>
+                            <h3 class="text-base font-semibold text-slate-900 dark:text-slate-100" id="teamModalTitle">Tambah Anggota Baru</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kelola data profil, jabatan kerja, dan tingkat hak akses sistem.</p>
                         </div>
-                        <button type="button" onclick="toggleTeamModal()" class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-slate-700 transition flex items-center justify-center">
-                            <i class="fa-solid fa-xmark text-lg"></i>
+                        <button type="button" onclick="toggleTeamModal()" class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center" aria-label="Tutup modal">
+                            <i class="fa-solid fa-xmark text-sm"></i>
                         </button>
                     </div>
 
                     <div class="space-y-4">
                         <!-- Nama Lengkap -->
                         <div>
-                            <label for="name" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nama Lengkap</label>
+                            <label for="name" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nama Lengkap</label>
                             <input type="text" name="name" id="name" required 
-                                class="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition" 
+                                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" 
                                 placeholder="Masukkan nama lengkap">
                         </div>
 
                         <!-- Email -->
                         <div>
-                            <label for="email" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Alamat Email</label>
+                            <label for="email" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">Alamat Email</label>
                             <input type="email" name="email" id="email" required 
-                                class="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition" 
-                                placeholder="nama@assunnah.com">
+                                class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" 
+                                placeholder="nama@email.com">
                         </div>
 
                         <!-- Password -->
                         <div id="passwordGroup">
                             <div class="flex items-center justify-between mb-1.5">
-                                <label for="password" class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-                                    Kata Sandi <span id="passwordHint" class="font-normal text-gray-400"></span>
+                                <label for="password" class="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                    Kata Sandi <span id="passwordHint" class="font-normal text-slate-400 text-[11px] ml-1"></span>
                                 </label>
                             </div>
                             <div class="relative">
                                 <input type="password" name="password" id="password" value="password123" 
-                                    class="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition pr-10" 
+                                    class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 pr-10 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" 
                                     placeholder="Masukkan kata sandi">
-                                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
-                                    <i id="pwdToggleIcon" class="fa-solid fa-eye text-sm"></i>
+                                <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1" title="Tampilkan / Sembunyikan">
+                                    <i id="pwdToggleIcon" class="fa-regular fa-eye text-xs"></i>
                                 </button>
                             </div>
-                            <div id="defaultPasswordBtnContainer" class="flex items-center gap-2 mt-2">
-                                <button type="button" onclick="document.getElementById('password').value='password123'" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-[11px] font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition flex items-center gap-1.5">
-                                    <i class="fa-solid fa-key text-[10px]"></i>
-                                    <span>Gunakan Default: <strong class="font-mono">password123</strong></span>
+                            <div id="defaultPasswordBtnContainer" class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mt-1.5">
+                                <span>Kata sandi awal: <code class="font-mono text-slate-700 dark:text-slate-300 font-medium">password123</code></span>
+                                <button type="button" onclick="document.getElementById('password').value='password123'" class="text-[11px] font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 hover:underline">
+                                    Gunakan default
                                 </button>
                             </div>
                         </div>
@@ -404,25 +404,25 @@ ksort($departments);
                         <!-- Jabatan & Departemen -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <div>
-                                <label for="role" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Jabatan / Profesi</label>
+                                <label for="role" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">Jabatan / Profesi</label>
                                 <input type="text" name="role" id="role" required 
-                                    class="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition" 
+                                    class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" 
                                     placeholder="Contoh: UI Designer">
                             </div>
                             <div>
-                                <label for="department" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Departemen</label>
+                                <label for="department" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">Departemen</label>
                                 <input type="text" name="department" id="department" required 
-                                    class="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition" 
+                                    class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-colors" 
                                     placeholder="Contoh: IT / Programming">
                             </div>
                         </div>
 
                         <!-- Status Keanggotaan -->
                         <div>
-                            <label for="status" class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Status Keanggotaan</label>
+                            <label for="status" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">Status Keanggotaan</label>
                             <div class="select-container" id="statusSelectContainer">
                                 <div class="select-trigger">
-                                    <span class="select-trigger-text text-gray-700 dark:text-gray-300">Pilih Status...</span>
+                                    <span class="select-trigger-text text-slate-700 dark:text-slate-300">Pilih Status...</span>
                                     <i class="fa-solid fa-chevron-down select-trigger-icon flex items-center justify-center text-xs"></i>
                                 </div>
                                 <div class="select-options">
@@ -434,44 +434,44 @@ ksort($departments);
                         </div>
 
                         <!-- Hak Akses Sistem (Level Otoritas) -->
-                        <div class="pt-2">
-                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        <div class="pt-1">
+                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">
                                 Hak Akses Sistem
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="systemRoleSelector">
                                 <!-- Member Card -->
-                                <label class="relative flex flex-col p-3.5 rounded-xl border-2 border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/30 cursor-pointer transition-all role-card" id="role-card-member">
-                                    <div class="flex items-center justify-between mb-1.5">
+                                <label class="relative flex flex-col p-3 rounded-xl border border-indigo-500 bg-indigo-50/40 dark:bg-indigo-950/30 cursor-pointer transition-all role-card" id="role-card-member">
+                                    <div class="flex items-center justify-between mb-1">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-6 h-6 rounded-md bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs">
-                                                <i class="fa-solid fa-user-lock"></i>
+                                            <span class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs">
+                                                <i class="fa-solid fa-user text-[11px]"></i>
                                             </span>
-                                            <span class="font-bold text-xs text-gray-900 dark:text-gray-100">Member</span>
+                                            <span class="font-medium text-xs text-slate-900 dark:text-slate-100">Member</span>
                                         </div>
                                         <input type="radio" name="system_role" id="role_radio_member" value="member" checked class="w-3.5 h-3.5 text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer">
                                     </div>
-                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-normal">
-                                        Hanya mengelola tugas & proyek yang didelegasikan.
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                                        Mengelola tugas dan proyek yang ditugaskan kepada anggota.
                                     </p>
                                 </label>
 
                                 <!-- Admin Card -->
-                                <label class="relative flex flex-col p-3.5 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-slate-600 cursor-pointer transition-all role-card" id="role-card-admin">
-                                    <div class="flex items-center justify-between mb-1.5">
+                                <label class="relative flex flex-col p-3 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer transition-all role-card" id="role-card-admin">
+                                    <div class="flex items-center justify-between mb-1">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-6 h-6 rounded-md bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs">
-                                                <i class="fa-solid fa-shield-halved"></i>
+                                            <span class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center text-xs">
+                                                <i class="fa-solid fa-shield-halved text-[11px]"></i>
                                             </span>
-                                            <span class="font-bold text-xs text-gray-900 dark:text-gray-100">Admin</span>
+                                            <span class="font-medium text-xs text-slate-900 dark:text-slate-100">Admin</span>
                                         </div>
                                         <input type="radio" name="system_role" id="role_radio_admin" value="admin" class="w-3.5 h-3.5 text-indigo-600 focus:ring-indigo-500 accent-indigo-600 cursor-pointer">
                                     </div>
-                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-normal">
-                                        Akses menyeluruh terhadap semua proyek, tim, & log sistem.
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
+                                        Akses penuh untuk mengelola proyek, tim, dan pengaturan.
                                     </p>
                                 </label>
                             </div>
-                            <p id="selfRoleNotice" class="hidden text-xs text-amber-600 dark:text-amber-400 font-semibold mt-2">
+                            <p id="selfRoleNotice" class="hidden text-xs text-amber-600 dark:text-amber-400 font-medium mt-2">
                                 <i class="fa-solid fa-triangle-exclamation mr-1"></i> Anda tidak dapat mengubah hak akses akun Anda sendiri demi keamanan.
                             </p>
                         </div>
@@ -482,12 +482,12 @@ ksort($departments);
                     </div>
 
                     <!-- Modal Actions -->
-                    <div class="flex items-center justify-end gap-2.5 mt-7 pt-4 border-t border-gray-100 dark:border-slate-700">
-                        <button type="button" onclick="toggleTeamModal()" class="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 font-semibold text-xs hover:bg-gray-200 dark:hover:bg-slate-600 transition">
+                    <div class="flex items-center justify-end gap-2.5 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button type="button" onclick="toggleTeamModal()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition">
                             Batal
                         </button>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold text-xs hover:bg-indigo-700 transition shadow-sm shadow-indigo-200 dark:shadow-none">
-                            Simpan Anggota
+                        <button type="submit" id="btnSubmitTeam" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold text-xs transition shadow-sm shadow-indigo-200 dark:shadow-none flex items-center justify-center gap-2 cursor-pointer">
+                            <span>Simpan</span>
                         </button>
                     </div>
                 </div>
@@ -499,7 +499,7 @@ ksort($departments);
 <!-- Modal Reset Password -->
 <div id="resetPasswordModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-xs modal-overlay opacity-0 transition-opacity" aria-hidden="true" onclick="toggleResetPasswordModal()"></div>
+        <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-md modal-overlay opacity-0 transition-opacity duration-200" style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);" aria-hidden="true" onclick="toggleResetPasswordModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         
         <div class="inline-block align-bottom bg-white dark:bg-slate-800 rounded-2xl text-left shadow-xl border border-gray-100 dark:border-slate-700 transform modal-content sm:my-8 sm:align-middle sm:max-w-md sm:w-full transition-all">

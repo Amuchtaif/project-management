@@ -26,96 +26,110 @@
 
             <!-- Notifications -->
             <div class="relative custom-dropdown" id="notifDropdown">
-                <button onclick="toggleDropdown('notifDropdown')" class="p-2 text-gray-400 hover:text-indigo-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition relative">
+                <button onclick="toggleDropdown('notifDropdown')" class="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition relative" aria-label="Notifikasi">
                     <i class="fa-solid fa-bell text-lg"></i>
                     <?php if (!empty($data['notifications'])) : ?>
-                        <span id="notifRedDot" class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white dark:border-slate-900 rounded-full animate-pulse"></span>
+                        <span id="notifRedDot" class="absolute top-2 right-2 w-2 h-2 bg-indigo-600 dark:bg-indigo-400 rounded-full ring-2 ring-white dark:ring-slate-900"></span>
                     <?php endif; ?>
                 </button>
                 
-                <div class="dropdown-menu fixed sm:absolute inset-x-4 sm:inset-auto top-20 sm:top-full sm:right-0 sm:mt-2 bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-3xl shadow-2xl py-3 hidden z-50 overflow-hidden" style="width: 360px; max-width: calc(100vw - 2rem);">
-                    <div class="px-5 py-3 border-b border-gray-100 dark:border-slate-700/80 mb-2 flex items-center justify-between">
+                <div class="dropdown-menu fixed sm:absolute inset-x-4 sm:inset-auto top-20 sm:top-full sm:right-0 sm:mt-2 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-xl shadow-slate-900/10 dark:shadow-black/40 py-0 hidden z-50 overflow-hidden w-auto sm:w-[380px]">
+                    <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50">
                         <div class="flex items-center gap-2">
-                            <h4 class="text-sm font-black text-gray-900 dark:text-gray-100">Notifikasi</h4>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">Notifikasi</h4>
                             <?php if (!empty($data['notifications'])) : ?>
-                                <span id="notifBadgeCount" class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400"><?= count($data['notifications']) ?></span>
+                                <span id="notifBadgeCount" class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300"><?= count($data['notifications']) ?></span>
                             <?php endif; ?>
                         </div>
                         <?php if (!empty($data['notifications'])) : ?>
-                            <button type="button" id="btnClearAllNotif" onclick="clearAllNotifications(event)" class="text-[11px] font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 flex items-center gap-1.5 transition px-2 py-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/30" title="Bersihkan semua notifikasi">
-                                <i class="fa-solid fa-trash-can text-[10px]"></i>
-                                <span>Clear Semua</span>
+                            <button type="button" id="btnClearAllNotif" onclick="clearAllNotifications(event)" class="text-xs font-medium text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 flex items-center gap-1.5 transition-colors px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" title="Tandai semua notifikasi telah dibaca">
+                                <i class="fa-solid fa-check-double text-[11px]"></i>
+                                <span>Tandai semua dibaca</span>
                             </button>
                         <?php endif; ?>
                     </div>
-                    <div id="notifListContainer" class="max-h-[65vh] sm:max-h-84 overflow-y-auto px-2 space-y-1.5">
+                    <div id="notifListContainer" class="max-h-[60vh] sm:max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/70">
                         <?php if (empty($data['notifications'])) : ?>
-                            <div class="px-4 py-8 text-center" id="emptyNotifState">
-                                <i class="fa-solid fa-bell-slash text-2xl text-gray-300 dark:text-gray-600 mb-2 block"></i>
-                                <p class="text-xs text-gray-400 dark:text-gray-500 font-medium italic">Tidak ada notifikasi baru.</p>
+                            <div class="px-6 py-10 text-center" id="emptyNotifState">
+                                <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-2.5">
+                                    <i class="fa-regular fa-bell text-sm"></i>
+                                </div>
+                                <p class="text-xs font-medium text-slate-700 dark:text-slate-300">Tidak ada notifikasi baru</p>
+                                <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Semua notifikasi telah dibaca</p>
                             </div>
                         <?php else : ?>
                             <?php foreach ($data['notifications'] as $notif) : 
                                 $type = $notif['type'] ?? 'deadline';
+                                $notifId = (int)$notif['id'];
+                                $link = $notif['link'] ?? (BASEURL . '/task?project_id=' . ($notif['project_id'] ?? ''));
+
                                 if ($type === 'new_project') {
-                                    $borderColor = 'border-indigo-500';
-                                    $bgColor = 'bg-indigo-50/70 dark:bg-indigo-950/20';
-                                    $textColor = 'text-indigo-700 dark:text-indigo-400';
-                                    $icon = '<i class="fa-solid fa-rocket text-indigo-500 text-xs"></i>';
-                                    $badge = 'PROJECT BARU';
-                                    $badgeClass = 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300';
+                                    $iconClass = 'fa-solid fa-folder-plus text-indigo-600 dark:text-indigo-400';
+                                    $iconBg = 'bg-indigo-50 dark:bg-indigo-950/50';
+                                    $categoryLabel = 'Proyek Baru';
                                 } elseif ($type === 'new_task') {
-                                    $borderColor = 'border-sky-500';
-                                    $bgColor = 'bg-sky-50/70 dark:bg-sky-950/20';
-                                    $textColor = 'text-sky-700 dark:text-sky-400';
-                                    $icon = '<i class="fa-solid fa-list-check text-sky-500 text-xs"></i>';
-                                    $badge = 'TASK BARU';
-                                    $badgeClass = 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300';
+                                    $iconClass = 'fa-solid fa-list-check text-sky-600 dark:text-sky-400';
+                                    $iconBg = 'bg-sky-50 dark:bg-sky-950/50';
+                                    $categoryLabel = 'Tugas Baru';
                                 } elseif ($type === 'new_comment') {
-                                    $borderColor = 'border-emerald-500';
-                                    $bgColor = 'bg-emerald-50/70 dark:bg-emerald-950/20';
-                                    $textColor = 'text-emerald-700 dark:text-emerald-400';
-                                    $icon = '<i class="fa-solid fa-comment-dots text-emerald-500 text-xs"></i>';
-                                    $badge = 'KOMENTAR';
-                                    $badgeClass = 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300';
+                                    $iconClass = 'fa-solid fa-comment-dots text-emerald-600 dark:text-emerald-400';
+                                    $iconBg = 'bg-emerald-50 dark:bg-emerald-950/50';
+                                    $categoryLabel = 'Komentar';
                                 } elseif ($type === 'new_subtask') {
-                                    $borderColor = 'border-purple-500';
-                                    $bgColor = 'bg-purple-50/70 dark:bg-purple-950/20';
-                                    $textColor = 'text-purple-700 dark:text-purple-400';
-                                    $icon = '<i class="fa-solid fa-square-check text-purple-500 text-xs"></i>';
-                                    $badge = 'SUB-TUGAS';
-                                    $badgeClass = 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300';
+                                    $iconClass = 'fa-solid fa-check-double text-purple-600 dark:text-purple-400';
+                                    $iconBg = 'bg-purple-50 dark:bg-purple-950/50';
+                                    $categoryLabel = 'Sub-tugas';
                                 } else {
                                     $isVeryNear = isset($notif['days_left']) ? ($notif['days_left'] <= 1) : (strpos($notif['message'] ?? '', 'hari ini') !== false || strpos($notif['message'] ?? '', '1 hari') !== false);
-                                    $borderColor = $isVeryNear ? 'border-rose-500' : 'border-amber-500';
-                                    $bgColor = $isVeryNear ? 'bg-rose-50/70 dark:bg-rose-950/20' : 'bg-amber-50/70 dark:bg-amber-950/20';
-                                    $textColor = $isVeryNear ? 'text-rose-700 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400';
-                                    $icon = '<i class="fa-solid fa-clock ' . ($isVeryNear ? 'text-rose-500' : 'text-amber-500') . ' text-xs"></i>';
-                                    $badge = 'DEADLINE';
-                                    $badgeClass = $isVeryNear ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300';
+                                    if ($isVeryNear) {
+                                        $iconClass = 'fa-solid fa-clock text-rose-600 dark:text-rose-400';
+                                        $iconBg = 'bg-rose-50 dark:bg-rose-950/50';
+                                        $categoryLabel = 'Tenggat Waktu';
+                                    } else {
+                                        $iconClass = 'fa-solid fa-clock text-amber-600 dark:text-amber-400';
+                                        $iconBg = 'bg-amber-50 dark:bg-amber-950/50';
+                                        $categoryLabel = 'Tenggat Waktu';
+                                    }
                                 }
-                                $link = $notif['link'] ?? (BASEURL . '/task?project_id=' . ($notif['project_id'] ?? ''));
                             ?>
-                                <a href="<?= $link ?>" class="block px-3.5 py-3 hover:bg-gray-100/80 dark:hover:bg-slate-700/60 transition border-l-[4px] <?= $borderColor ?> <?= $bgColor ?> rounded-2xl shadow-xs">
-                                    <div class="flex items-center justify-between gap-2 mb-1">
-                                        <div class="flex items-center gap-1.5">
-                                            <?= $icon ?>
-                                            <span class="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded <?= $badgeClass ?>"><?= $badge ?></span>
+                                <div data-notif-id="<?= $notifId ?>" 
+                                     onclick="handleNotificationClick(event, <?= $notifId ?>, '<?= htmlspecialchars($link, ENT_QUOTES) ?>')" 
+                                     class="notif-item group relative flex items-start gap-3 p-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer select-none">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shrink-0 mt-2"></span>
+                                    <div class="w-8 h-8 rounded-lg <?= $iconBg ?> flex items-center justify-center shrink-0 mt-0.5">
+                                        <i class="<?= $iconClass ?> text-xs"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0 pr-1">
+                                        <div class="flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 leading-none">
+                                            <span class="font-medium text-slate-600 dark:text-slate-400"><?= $categoryLabel ?></span>
+                                            <?php if (!empty($notif['time_ago'])) : ?>
+                                                <span class="text-slate-300 dark:text-slate-600">&bull;</span>
+                                                <span><?= $notif['time_ago'] ?></span>
+                                            <?php endif; ?>
                                         </div>
-                                        <?php if (!empty($notif['time_ago'])) : ?>
-                                            <span class="text-[10px] text-gray-400 font-bold"><?= $notif['time_ago'] ?></span>
+                                        <h5 class="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug line-clamp-1">
+                                            <?= htmlspecialchars($notif['title']) ?>
+                                        </h5>
+                                        <?php if (!empty($notif['message'])) : ?>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400 font-normal line-clamp-2 leading-relaxed mt-0.5">
+                                                <?= htmlspecialchars($notif['message']) ?>
+                                            </p>
                                         <?php endif; ?>
                                     </div>
-                                    <p class="text-xs font-black <?= $textColor ?> mb-0.5 truncate"><?= htmlspecialchars($notif['title']) ?></p>
-                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium line-clamp-2 leading-tight"><?= htmlspecialchars($notif['message'] ?? '') ?></p>
-                                </a>
+                                    <button type="button" 
+                                            onclick="dismissSingleNotification(event, <?= $notifId ?>, this.closest('.notif-item'))" 
+                                            class="btn-dismiss-single shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-all opacity-0 group-hover:opacity-100 max-sm:opacity-70 focus:opacity-100" 
+                                            title="Tandai dibaca">
+                                        <i class="fa-solid fa-xmark text-xs"></i>
+                                    </button>
+                                </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </div>
-                    <div class="px-5 py-3 border-t border-gray-100 dark:border-slate-700/80 mt-2">
-                        <a href="<?= BASEURL ?>/task" class="text-xs font-black text-indigo-600 dark:text-indigo-400 hover:underline flex items-center justify-between">
-                            <span>Buka Semua Task</span>
-                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <div class="p-2.5 bg-slate-50/60 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <a href="<?= BASEURL ?>/task" class="inline-flex items-center justify-center gap-1.5 text-xs font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 py-1 transition-colors">
+                            <span>Buka semua tugas</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
